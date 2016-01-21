@@ -1,0 +1,35 @@
+Pingrf implements RF communications with the Animas OneTouch Ping
+insulin pump. Pingrf is factored into three components: Packet radio
+firmware (using the TI/Chipcon CC11xx series chips); a radio RPC
+layer, so that clients may communicate with the packet radio through
+UART or SPI; and a pump driver, which implements the pump session
+and application layers.
+
+All are provided as cleanly separated APIs.
+
+Command cmd/pingrf implements a utility and test client for pingrf
+using Unix ttys. This tool demonstrates how to construct a pump client
+and invoke it. It's also useful in its own right, e.g.,:
+
+	$ pingrf -h
+	usage: pingrf [-t tty] [-b baud] [-dh] command [options]
+	Where command is one of:
+	  chkadd data checksum
+		Add known data-checksum pair. Arguments are hexdecimal strings.  status
+		Retrieve the home-screen status message of the pump
+	  status1
+		Retreive status screen 1 from the pump
+	  status2
+		Retriece status screen 2 from the pump
+	  status3
+		Retrieve status screen 3 from the pump
+	  cancelcombo
+		Cancel an existing combo bolus
+	  combo
+		Issue a combo bolus
+	
+	$ pingrf status2
+	Rstatus2 bolus 0.100 2016/1/20 18:05 iob 0.00
+	
+	$ pingrf cancelcombo
+	Rcancelcombo no combo active

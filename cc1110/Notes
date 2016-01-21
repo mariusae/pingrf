@@ -1,0 +1,43 @@
+
+- After a timeout, the radio is left in RX mode
+
+
+	Note that if an STX strobe is issued but no data is written to the
+	RFD register after the following assertion of the RFTXRXIF flag,
+	the radio will start sending preamble without entering TX_UNDERFLOW
+	state.
+
+
+
+PKTCTRL1 = 0xC0
+PKTCTRL0 = 0x02
+ADDR = 0x0
+CHANNR = 0x00
+FSCTRL1 = 0x06
+FSCTRL0 = 0x00
+FREQ2 = 0x00
+FREQ1 = 0x00
+FREQ0 = 0x00
+MDMCFG4 = 0xC9
+MDMCFG3 = 0x83
+MDMCFG2 = 0x01
+MDMCFG1 = 0x23
+MDMCFG0 = 0x80
+DEVIATN = 0x32
+MCSM2 = 0x0F
+MCSM1 = 0x0f
+MCSM0 = 0x38
+FOCCFG = 0x16
+BSCFG = 0x6C
+AGCCTRL2 = 0x43
+AGCCTRL1 = 0x40
+AGCCTRL0 = 0x91
+WOREVT1 = 0x00
+WOREVT0 = 0x00
+WORCTRL = 0x79
+FREND1 = 0x56
+FREND0 = 0x10
+FSCAL3 = 0xE9
+FSCAL2 = 0x2A
+FSCAL1 = 0x00
+FSCAL0 = 0x1F

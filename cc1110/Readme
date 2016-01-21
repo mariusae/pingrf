@@ -1,0 +1,6 @@
+
+To-do
+
+ *	Use a watchdog to detect stuck firmware
+ *	UART flow control
+ *	LEDs for rx/tx
