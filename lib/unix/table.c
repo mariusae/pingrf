@@ -27,12 +27,12 @@ Table*
 tableopen(char *name, uint keysize, uint valuesize)
 {
 	Table *tab;
-	char *dir = getenv("APE");
+	char *dir = getenv("PB");
 	char path[256];
 	int n;
 	
 	if(dir == nil){
-		werrstr("$APE not defined");
+		werrstr("$PB not defined");
 		return nil;
 	}
 

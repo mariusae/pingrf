@@ -18,6 +18,8 @@ struct
 	Printer *pr;
 } printers[8];
 
+static XDATA char digits[] = "0123456789abcdef";
+
 /* Copyright (c) 2004 Russ Cox.  See COPYRIGHT. */
 
 /*
@@ -61,6 +63,23 @@ printstr(char *dst, char *edst, char *s, int size)
 		memmove(dst+n-l, s, l);
 	}
 	return dst+n;
+}
+
+static char*
+printhexstr(char *dst, char *edst, uint8 *buf, uint n)
+{
+	int i;
+	
+	for(i=0; i<n; i++){
+		if(dst >= edst)
+			return dst;
+		*dst++ = digits[buf[i]>>4];
+		if(dst >= edst)
+			return dst;
+		*dst++ = digits[buf[i]&0xf];
+	}
+	
+	return dst;
 }
 	
 char*
@@ -121,7 +140,6 @@ vseprint(char *dst, char *edst, char *fmt, va_list arg)
 					goto num;
 				num:
 				{
-					static XDATA char digits[] = "0123456789abcdef";
 					char buf[30];
 					char *p, *zp;
 					int neg, zero;
@@ -184,7 +202,7 @@ vseprint(char *dst, char *edst, char *fmt, va_list arg)
 					goto break2;
 				
 				case 'X':
-					// XXX
+					w = printhexstr(w, edst, va_arg(fmtarg.arg, uint8*), va_arg(fmtarg.arg, uint));
 					goto break2;
 
 				case 'r':

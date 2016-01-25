@@ -22,7 +22,7 @@ pumpchk(void *v, uint n, uint32 *chkp)
 		*chkp = U32GET(chk);
 		return 0;
 	}else{
-		werrstr("checksum missing");
+		werrstr("checksum missing for payload %X", v, n);
 		return -1;
 	}
 }
@@ -45,7 +45,7 @@ pumpchkpayload(void *v)
 {
 	uint8 *p = v;
 	uint32 crc = crc32(p+8, 28);
-	U32PUTLE(p+36, crc);
+	U32PUT(p+36, crc);
 	return 0;
 }
 

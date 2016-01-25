@@ -31,9 +31,10 @@ static struct
 	{"status1", Tstatus1, "Retreive status screen 1 from the pump"},
 	{"status2", Tstatus2, "Retriece status screen 2 from the pump"},
 	{"status3", Tstatus3, "Retrieve status screen 3 from the pump"},
-	{"cancelcombo", Tcancelcombo, "Cancel an existing combo bolus"},
-	{"combo", Tcombo, "Issue a combo bolus"}
+	{"cancelcombo", Tcancelcombo, "Cancel an existing combo bolus"}
 };
+
+int pxxx();
 
 int
 main(int argc, char **argv)
@@ -41,9 +42,9 @@ main(int argc, char **argv)
 	int i;
 	uint8 buf[256];
 	uint n;
+	float insulin, hours;
 	
 	_rcallimpl = &rcallimpl;
-	
 
 	fmtinstall('P', Pcallfmt);
 	fmtinstall('R', rcallfmt);
@@ -61,7 +62,7 @@ main(int argc, char **argv)
 	case 'h':
 		usage();
 	}ARGEND
-	
+
 	if(argc == 0)
 		usage();
 
@@ -82,11 +83,39 @@ main(int argc, char **argv)
 			panic("unhexlify: %r");
 
 		print("crc32(%s) = %8ux\n", argv[1], crc32(buf, n));
-	}else{
+	}else if(strcmp(argv[0], "stat") == 0){
+		Pstat ps;
+		
+		if(pstat(&ps) < 0)
+			panic("pstat: %r");
+		
+		print("%4d/%2d/%2d %2d:%2d\n", 
+			ps.year, ps.month, ps.day, ps.hour, ps.minute);
+		print("	Insulin remaining: %d\n", ps.insulinleft);
+		print("	IOB: %d.%2d\n", ps.iob/1000, ps.iob%1000);
+		print("	Basal: %d.%3d\n", ps.basal/1000, ps.basal%1000);
+		print("	Temp: %d %d/%d\n", ps.temp, ps.temptime, ps.temptotal);
+		print("	Last bolus: %d.%2d\n", ps.lastbolus/1000, ps.lastbolus%1000);
+	}else if(strcmp(argv[0], "combo") == 0){
+		if(argc != 3)
+			usage();
+
+		insulin = strtof(argv[1], nil);
+		hours = strtof(argv[2], nil);
+
+		if(pcombo((uint)(insulin*1000.0), (uint)(hours*60)) < 0)
+			panic("pcombo: %r");
+
+		print("ok\n");
+	}else if(strcmp(argv[0], "cancelcombo") == 0){
+		if(pcancel() < 0)
+			panic("pcancel: %r");
+		print("ok\n");
+	}else if(strcmp(argv[0], "pcall") == 0 && argc > 1){
 		int type = -1;
 
 		for(i=0; i<nelem(cmdtab); i++)
-			if(strcmp(argv[0], cmdtab[i].name) == 0){
+			if(strcmp(argv[1], cmdtab[i].name) == 0){
 				type = cmdtab[i].type;
 				break;
 			}
@@ -95,6 +124,8 @@ main(int argc, char **argv)
 			usage();
 		
 		call(type);
+	}else{
+		usage();
 	}
 
 	return 0;
@@ -178,20 +209,35 @@ rcallimpl(Rcall *tx, Rcall *rx)
 	if(convR2M(tx, buf, sizeof buf) == 0)
 		return -1;
 
-	if(rcallwrite(buf, buf[0]) < 0)
+	if(rcallwrite(buf, buf[0]) < 0) {
+		werrstr("Rcall write: %r");
 		return -1;
+	}
 
-	if(readn(tty, buf, 1) < 0)
+	if(readn(tty, buf, 1) < 0){
+		werrstr("Rcall read size: %r");
 		return -1;
+	}
 
-	if(buf[0] > RCALLMAX)
+	if(buf[0] > RCALLMAX){
+		werrstr("invalid rcall: too big");
 		return -1;
+	}
 
-	if(readn(tty, &buf[1], buf[0]-1) < 0)
+	if(readn(tty, &buf[1], buf[0]-1) < 0){
+		werrstr("Rcall read payload: %r");
 		return -1;
+	}
 
-	if(convM2R(buf, sizeof buf, rx) == 0)
+	if(convM2R(buf, sizeof buf, rx) == 0){
+		werrstr("Invalid Rcall R-message");
 		return -1;
+	}
+
+	if(rx->type != tx->type+1 && rx->type != Rerr){
+		werrstr("bad rx Rcall");
+		return -1;
+	}
 
 	dprint("rx %R\n", rx);
 	dprinthex(rx->pkt, Npkt);

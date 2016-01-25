@@ -2,6 +2,7 @@
 #include <lib.h>
 #include <table.h>
 #include <libradio/rcall.h>
+#include "pcall.h"
 #include "pump.h"
 
 uint32	crc32(void*, uint);

@@ -14,7 +14,7 @@ convP2C(uint8 *p, Pcall *c)
 
 	case Rstatus:
 	{
-		Pstatus *s = &c->status;
+		Mstatus *s = &c->status;
 		s->year = 2007 + (p[12]&0xf);
 		s->month = 1 + (p[12]>>4);
 		s->day = p[13];
@@ -38,12 +38,12 @@ convP2C(uint8 *p, Pcall *c)
 
 	case Rstatus1:
 	{
-		Pstatus1  *s = &c->status1;
+		Mstatus1  *s = &c->status1;
 		s->prognum = p[9];
 		memcpy(s->progname, p+16, 10);
 		s->progname[10] = 0;
 		s->insulin = p[14];
-		s->daily = (p[11]<<8) | p[10];
+		s->daily = 10*((p[11]<<8) | p[10]);
 		s->hourly = (p[13]<<8) | p[12];
 		
 		 break;
@@ -51,7 +51,7 @@ convP2C(uint8 *p, Pcall *c)
 	
 	case Rstatus2:
 	{
-		Pstatus2 *s = &c->status2;
+		Mstatus2 *s = &c->status2;
 
 		// Last bolus 
 		s->year = 2007 + (p[14]&0xf);
@@ -60,14 +60,14 @@ convP2C(uint8 *p, Pcall *c)
 		s->hour = p[16];
 		s->minute = p[17];
 		s->bolus = (p[13]<<8) | p[12];
-		s->iob = (p[25]<<8) | p[24];
+		s->iob = 10*((p[25]<<8) | p[24]);
 
 		break;
 	}
 
 	case Rstatus3:
 	{
-		Pstatus3 *s = &c->status3;
+		Mstatus3 *s = &c->status3;
 
 		s->bolus = U32GETLE(p+12);
 		s->basal = U32GETLE(p+16);
@@ -125,7 +125,7 @@ convC2P(Pcall *c, uint8 *p)
 	
 	case Tstatus3:
 		p[0] = 0x27, p[1] = 0x00, p[2] = 0xf8, p[3] = 0x00;
-		p[76] = 0x18; /* XXX*/
+//		p[76] = 0x18; /* XXX*/
 		break;
 	
 	case Tcancelcombo:
@@ -147,11 +147,39 @@ convC2P(Pcall *c, uint8 *p)
 	case Tcombo:
 		p[0] = 0x37, p[1] = 0x00, p[2] = 0x0e, p[3] = 0x1c;
 		
-		/* Do we need to set flag=78? */
+		if(c->combo.minutes % 6 != 0){
+			werrstr("combo duration must be a multiple of 6");
+			return -1;
+		}
 
-		p[8] = 0x01, p[9] = 0x00, p[10] = 0x32, p[11] = 0x00,  
-			p[12] = 0xcd, p[13] = 0xff, p[14] = 0x41;
+		/* Do we need to set flag=78? */
 		
+		/* p[10], p[11] - LE amount */
+/*
+		p[8] = 0x01, p[9] = 0x00, p[10] = 0x32, p[11] = 0x00, 
+			p[12] = 0xcd, p[13] = 0xff, p[14] = 0x41;
+*/
+
+		p[8] = 0x01, p[9] = 0x00;
+		
+		/* They seem to be in "extra careful" mode here:
+		 * as well as the amount of insulin, they also store
+		 * the two's complement of the amount of insulin.
+		 * (All in milliunits.)
+		 */
+		U16PUTLE(p+10, c->combo.insulin);
+		U16PUTLE(p+12, 65535-c->combo.insulin);
+		p[14] = c->combo.minutes/6;
+
+/*
+		p[8] = 0x01, p[9] = 0x00, 
+			p[10] = 0xb0, p[11] = 0x04, 
+			p[12] = 0x4f, p[13] = 0xfb, 
+			p[14] = 0x5;
+*/
+			/* increments of 6 minutes. */
+
+			
 		if(pumpchkpayload(p) < 0)
 			return -1;
 
@@ -178,7 +206,7 @@ Pcallfmt(Fmt *f)
 
 	case Rstatus:
 	{
-		Pstatus *s = &c->status;
+		Mstatus *s = &c->status;
 
 		return fmtprint(f,  "Rstatus  %4d/%d/%d %d:%2d basal %d.%3d insulin %dU temp %d %d/%d",
 			s->year, s->month, s->day, s->hour, s->minute,
@@ -188,26 +216,26 @@ Pcallfmt(Fmt *f)
 
 	case Rstatus1:
 	{
-		Pstatus1 *s = &c->status1;
+		Mstatus1 *s = &c->status1;
 		return fmtprint(f, "Rstatus1 %d-%s insulin %dU, daily %d.%2dU hourly %d.%3dU",
 			s->prognum, s->progname, s->insulin,
-			s->daily/100, s->daily%100,
+			s->daily/1000, s->daily%1000,
 			s->hourly/1000, s->hourly%1000);
 	}
 
 	
 	case Rstatus2:
 	{
-		Pstatus2 *s = &c->status2;
+		Mstatus2 *s = &c->status2;
 		return fmtprint(f, "Rstatus2 bolus %d.%3d %4d/%d/%d %2d:%2d iob %d.%2d",
 			s->bolus/1000, s->bolus%1000,
 			s->year, s->month, s->day,
-			s->hour, s->minute, s->iob/100, s->iob%100);
+			s->hour, s->minute, s->iob/1000, s->iob%1000);
 	}
 	
 	case Rstatus3:
 	{
-		Pstatus3 *s = &c->status3;
+		Mstatus3 *s = &c->status3;
 		return fmtprint(f, "Rstatus3 bolus %d.%3d basal %d.%3d temp=%d suspend=%d",
 			s->bolus/1000, s->bolus%1000, s->basal/1000, s->basal%1000,
 			s->temp, s->suspend);

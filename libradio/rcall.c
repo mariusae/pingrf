@@ -2,7 +2,7 @@
 #include <lib.h>
 #include "rcall.h"
 
-int (*_rcallimpl)(Rcall*, Rcall*);
+int (*_rcallimpl)(Rcall*, Rcall*) = nil;
 
 int
 rcall(Rcall *tx, Rcall *rx)
@@ -24,14 +24,8 @@ rcall(Rcall *tx, Rcall *rx)
 		werrstr("invalid rx message");
 		return -1;
 	}
-	
-	// TODO: detailed error messages
-	if(rx->type == Rerr){
-		werrstr("rcall error");
-		return -1;
-	}
-	
-	if(rx->type != tx->type+1){
+
+	if(rx->type != tx->type+1 && rx->type != Rerr){
 		werrstr("bad rx Rcall");
 		return -1;
 	}

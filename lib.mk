@@ -1,4 +1,3 @@
-
 TARG ?= unix
 
 THISFILE = $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
@@ -22,10 +21,18 @@ endif
 
 O = _build
 
-$(O)/%.o : %.c
+$(OFILES): $(HFILES)
+
+$(O)/%.o : %.c 
 	@mkdir -p $(dir $@)
 	@echo "cc	-o$@	$<"
 	@$(CC) -c $(CFLAGS) -o$@ $<
+
+$(O)/%.o : %.s 
+	@mkdir -p $(dir $@)
+	@echo "cc	-o$@	$<"
+	@$(CC) -c $(CFLAGS) -o$@ $<
+
 
 config:
 	@echo $(O)

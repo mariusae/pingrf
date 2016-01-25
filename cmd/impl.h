@@ -12,6 +12,7 @@
 #include <termios.h>
 
 #include <libradio/rcall.h>
+#include <libpump/pcall.h>
 #include <libpump/pump.h>
 #include "arg.h"
 
@@ -25,5 +26,5 @@ extern int debug;
 #undef dprint
 #undef dprinthex
 
-#define dprint(...)	if(debug) fprint(2, __VA_ARGS__)
-#define dprinthex(p, n)	if(debug) printhex(p, n)
+#define dprint(...)	if(debug)fprint(2, __VA_ARGS__)
+#define dprinthex(p, n)	if(debug)printhex(p, n)
