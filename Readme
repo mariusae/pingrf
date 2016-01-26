@@ -1,3 +1,6 @@
+BEWARE! This software is highly experimental, and is NOT INTENDED
+for diagnostic or medical use. I have no affiliation with Animas or J&J.
+
 Pingrf implements RF communications with the Animas OneTouch Ping
 insulin pump. Pingrf is factored into three components: Packet radio
 firmware (using the TI/Chipcon CC11xx series chips); a radio RPC
