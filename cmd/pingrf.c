@@ -102,7 +102,7 @@ main(int argc, char **argv)
 
 		insulin = strtof(argv[1], nil);
 		hours = strtof(argv[2], nil);
-
+		
 		if(pcombo((uint)(insulin*1000.0), (uint)(hours*60)) < 0)
 			panic("pcombo: %r");
 
@@ -142,7 +142,7 @@ usage()
 	fprint(2, "	Add known data-checksum pair. Arguments are hexdecimal strings.");
 
 	for(i=0; i<nelem(cmdtab); i++){
-		fprint(2, "  %s\n", cmdtab[i].name);
+		fprint(2, "  pcall %s\n", cmdtab[i].name);
 		fprint(2, "	%s\n", cmdtab[i].description);
 	}
 

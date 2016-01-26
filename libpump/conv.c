@@ -4,10 +4,18 @@ char* printstr(char *dst, char *edst, char *s, int size)  REENTRANT;
 char* seprint(char *dst, char *edst, char *fmt, ...) REENTRANT;
 static char* strpcallerr(int err);
 
+/* 
+ * BUG: currently this expects to be called from replies only.
+ * e.g., the type is adjusted to account for this.
+ */
 int
 convP2C(uint8 *p, Pcall *c)
 {
-	c->type = p[0]+0xff; /* XXX - actually distinguish between these */
+	pcallinit(c, p[0]+0xff);
+
+	c->err = Eok;
+	c->tag = p[2];
+	c->arg = p[3];
 
 	switch(c->type){
 	default: return 0;
@@ -74,15 +82,18 @@ convP2C(uint8 *p, Pcall *c)
 		s->temp = p[10] & 0x1;
 		s->suspend = p[10] & 0x2;
 	}
-	
+
 	case Rcancelcombo:
-		switch(p[2]){
+		/* TODO: figure this one out. */
+/*		switch(p[2]){
 		case 0x07:	c->err = Eok; break;
 		case 0x15:	c->err = Enocombo; break;
 		default:		c->err = Eunknown;
 		}
+*/
 		break;
 	}
+	
 
 	return 0;
 }
@@ -91,95 +102,47 @@ int
 convC2P(Pcall *c, uint8 *p)
 {
 	memset(p, 0, Npkt);
+	
+	p[0] = c->type;
+	p[1] = 0;
+	p[2] = c->tag;
+	p[3] = c->arg;
 
 	switch(c->type){
-	default:
-		werrstr("No encoding for packet type %2x", c->type);
-		return -1;
+	default:	break;
 
 	case Twakeup:
 	{
 		static uint8 wakeup[] = {
-			0x00, 0x00, 0x00, 0x04,	/* command */
-			0xde, 0xad, 0xbe, 0xef, 
 			0x49, 0x01, 0x2d, 0x14, 	/* this seems be required, */
-			0x50, 0x8b, 0xdb, 0xb9	/* not sure why exactly */
+			0x50, 0x8b, 0xdb, 0xb9	/* not sure why yet */
 		};
-		memcpy(p, wakeup, sizeof wakeup);
+
+		/* Required arg. 0x4 seems to be used  */
+		p[3] = 0x04;
+		memcpy(p+8, wakeup, sizeof wakeup);
 		break;
 	}
-	
-	case Tstatus:
-//		p[0] = 0x50, p[1] = 0x00, p[2] = 0xf8, p[3] = 0x00;
-		p[0] = 0x50, p[1] = 0x00, p[2] = 0x0e, p[3] = 0x00;
-
-		break;
-
-	case Tstatus1:
-		p[0] = 0x20, p[1] = 0x00, p[2] = 0x0e, p[3] = 0x00;
-		break;
-	
-	case Tstatus2:
-		p[0] = 0x25, p[1] = 0x00, p[2] = 0x0e, p[3] = 0x00;
-		break;
-	
-	case Tstatus3:
-		p[0] = 0x27, p[1] = 0x00, p[2] = 0xf8, p[3] = 0x00;
-//		p[76] = 0x18; /* XXX*/
-		break;
-	
-	case Tcancelcombo:
-		p[0] = 0x35, p[1] = 0x00, p[2]= 0x0e, p[3] = 0x00;
-		break;
-
-	case Tack1:
-		p[0] = 0x31, p[1] = 0x00, p[2] = 0x12, p[3] = 0x00;
-		break;
-
-	case Tack2:
-		p[0] = 0x33, p[1] = 0x00, p[2] = 0x24, p[3] = 0x00;
-		break;
-
-	case Tack3:
-		p[0] = 0x36, p[1] = 0x00, p[2] = 0xdc, p[3] = 0x00;
-		break;
 
 	case Tcombo:
-		p[0] = 0x37, p[1] = 0x00, p[2] = 0x0e, p[3] = 0x1c;
+		/* Arg required. */
+		p[3] = 0x1c;
 		
 		if(c->combo.minutes % 6 != 0){
+			/* The pump does not seem to accept other durations. */
 			werrstr("combo duration must be a multiple of 6");
 			return -1;
 		}
 
 		/* Do we need to set flag=78? */
-		
-		/* p[10], p[11] - LE amount */
-/*
-		p[8] = 0x01, p[9] = 0x00, p[10] = 0x32, p[11] = 0x00, 
-			p[12] = 0xcd, p[13] = 0xff, p[14] = 0x41;
-*/
-
 		p[8] = 0x01, p[9] = 0x00;
-		
-		/* They seem to be in "extra careful" mode here:
-		 * as well as the amount of insulin, they also store
-		 * the two's complement of the amount of insulin.
-		 * (All in milliunits.)
+
+		/* They seem to be in "extra careful" mode here.
 		 */
 		U16PUTLE(p+10, c->combo.insulin);
-		U16PUTLE(p+12, 65535-c->combo.insulin);
+		U16PUTLE(p+12, 0xffff^c->combo.insulin);
 		p[14] = c->combo.minutes/6;
 
-/*
-		p[8] = 0x01, p[9] = 0x00, 
-			p[10] = 0xb0, p[11] = 0x04, 
-			p[12] = 0x4f, p[13] = 0xfb, 
-			p[14] = 0x5;
-*/
-			/* increments of 6 minutes. */
-
-			
 		if(pumpchkpayload(p) < 0)
 			return -1;
 

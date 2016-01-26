@@ -77,6 +77,11 @@ enum
 {
 	Twakeup = 0x00,
 	Rwakeup = Twakeup+0xff,
+	
+	Tkeepalive = 0x03,
+	Rkeepalive = 0x03+0xff,
+	
+	Tadjourn = 0x05,
 
 	Tstatus = 0x50,
 	Rstatus = Tstatus+0xff,
@@ -92,6 +97,11 @@ enum
 	
 	Tcancelcombo = 0x35,
 	Rcancelcombo = Tcancelcombo+0xff,
+
+	/* These are .. not acks exactly.  More like "user still present" */
+
+	Tack0 = 0x30,
+	Rack0 = 0x30+0xff,
 	
 	Tack1 = 0x31,
 	Rack1 = Tack1+0xff,
@@ -111,6 +121,9 @@ enum
 typedef struct
 {
 	int type;
+	uint8 tag;
+	uint8 arg;
+
 	union
 	{
 		int err;
@@ -123,6 +136,7 @@ typedef struct
 } Pcall;
 
 int	pcall(Pcall*, Pcall*);
+void	pcallinit(Pcall *pc, int type);
 
 int	convP2C(uint8 *p, Pcall *c);
 int	convC2P(Pcall *c, uint8 *p);
@@ -132,6 +146,3 @@ void	Pcallfmt(Fmt *f);
 int pxxx();
 
 int	pumpaddchk(void *v, uint n, uint32 chk);
-
-int	_pwakeup(uint);
-int	_pcall(Pcall*, Pcall*, uint16 timeoutms, uint16 preamblems);

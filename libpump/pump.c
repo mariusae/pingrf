@@ -3,15 +3,15 @@
 int
 pstat(Pstat *ps)
 {
-	Pcall tx, rx;
-	
+	static Pcall tx, rx;
+
 	memset(ps, 0, sizeof *ps);
 
-	if(_pwakeup(0) < 0)
+	if(_presume() < 0)
 		return -1;
-	
-	tx.type = Tstatus;
-	if(_pcall(&tx, &rx, 250, 0) != 1)		/* TODO: retries */
+
+	pcallinit(&tx, Tstatus);
+	if(_pcall(&tx, &rx) != 1)
 		return -1;
 
 	ps->month = rx.status.month;
@@ -25,11 +25,12 @@ pstat(Pstat *ps)
 	ps->temptime = rx.status.temptime;
 	ps->temptotal = rx.status.temptotal;
 
-	if(_pwakeup(1) < 0)
+	_padjourn();
+	if(_presume() < 0)
 		return -1;
 
-	tx.type = Tstatus2;
-	if(_pcall(&tx, &rx, 250, 0) != 1)
+	pcallinit(&tx, Tstatus2);
+	if(_pcall(&tx, &rx) != 1)
 		return -1;
 
 	/* XXX last bolus time */
@@ -37,34 +38,36 @@ pstat(Pstat *ps)
 	ps->lastbolus = rx.status2.bolus;
 	ps->iob = rx.status2.iob;
 	
+	_padjourn();
+
 	return 0;
 }
 
 int
 pcombo(uint insulin, uint minutes)
 {
-	Pcall tx, rx;
+	static Pcall tx, rx;
 
 	if(minutes%6 != 0){
 		werrstr("combo duration must be in increments of 6 minutes!");
 		return -1;
 	}
 
-	if(_pwakeup(0) < 0)
+	if(_presume() < 0)
 		return -1;
 
-	tx.type = Tcombo;
+	pcallinit(&tx, Tcombo);
 	tx.combo.insulin = insulin;
 	tx.combo.minutes = minutes;
-	if(_pcall(&tx, &rx, 250, 0) != 1)
-		return -1;
-	
-	tx.type = Tack1;
-	if(_pcall(&tx, &rx, 250, 0) != 1)
+	if(_pcall(&tx, &rx) != 1)
 		return -1;
 
-	tx.type = Tack2;
-	if(_pcall(&tx, &rx, 250, 0) != 1)
+	pcallinit(&tx, Tack1);
+	if(_pcall(&tx, &rx) != 1)
+		return -1;
+
+	pcallinit(&tx, Tack2);
+	if(_pcall(&tx, &rx) != 1)
 		return -1;
 
 /*
@@ -73,20 +76,23 @@ pcombo(uint insulin, uint minutes)
 		return -1;
 */
 
+	_padjourn();
+
 	return 0;
 }
 
 int
 pcancel()
 {
-	Pcall tx, rx;
+	static Pcall tx, rx;
 
-	if(_pwakeup(0) < 0)
+	if(_presume() < 0)
 		return -1;
 	
-	tx.type = Tcancelcombo;
-	if(_pcall(&tx, &rx, 250, 0) != 1)
+	pcallinit(&tx, Tcancelcombo);
+	if(_pcall(&tx, &rx) != 1)
 		return -1;
 	
+	_padjourn();
 	return 0;
 }
