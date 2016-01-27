@@ -139,7 +139,11 @@ usage()
 	fprint(2, "usage: pingrf [-t tty] [-b baud] [-dh] command [options]\n");
 	fprint(2, "Where command is one of:\n");
 	fprint(2, "  chkadd data checksum\n");
-	fprint(2, "	Add known data-checksum pair. Arguments are hexdecimal strings.");
+	fprint(2, "	Add known data-checksum pair. Arguments are hexdecimal strings.\n");
+	fprint(2, "  combo insulin hours\n");
+	fprint(2, "	Issue a combo bolus for the given amount of insulin and time.\n");
+	fprint(2, "  cancelcombo\n");
+	fprint(2, "	Cancel a currently running combo bolus.\n");
 
 	for(i=0; i<nelem(cmdtab); i++){
 		fprint(2, "  pcall %s\n", cmdtab[i].name);
