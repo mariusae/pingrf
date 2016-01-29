@@ -17,6 +17,8 @@ void	chkadd(char *v, char *chk);
 void	call(int type);
 int	rcallimpl(Rcall *tx, Rcall *rx);
 
+static void chklearn();
+
 extern int (*_rcallimpl)(Rcall*, Rcall*);
 
 uint32	crc32(void*, uint);
@@ -33,8 +35,6 @@ static struct
 	{"status3", Tstatus3, "Retrieve status screen 3 from the pump"},
 	{"cancelcombo", Tcancelcombo, "Cancel an existing combo bolus"}
 };
-
-int pxxx();
 
 int
 main(int argc, char **argv)
@@ -73,6 +73,8 @@ main(int argc, char **argv)
 			usage();
 
 		chkadd(argv[1], argv[2]);
+	}else if(strcmp(argv[0], "chklearn") == 0){
+		chklearn();
 	}else if(strcmp(argv[0], "crc32") == 0){
 		if(argc != 2)
 			usage();
@@ -307,4 +309,26 @@ radiorpc(uint8 *buf)
 {
 	werrstr("not implemented");
 	return -1;
+}
+
+static void
+chklearn()
+{
+	Rcall tx, rx;
+	uint32 chk32;
+
+	for(;;){
+		tx.type = Trx;
+		tx.timeoutms = 0;
+		if(rcall(&tx, &rx) < 0)
+			panic("rcall: %r");
+			
+		chk32 = U32GETLE(rx.pkt+4);
+
+		if(pumpaddchk(rx.pkt, 4, chk32) < 0)
+			panic("pumpaddchk: %r");
+
+		fprint(2, "learned chk(%2x%2x%2x%2x) = %8ux\n",
+			rx.pkt[0], rx.pkt[1], rx.pkt[2], rx.pkt[3], chk32);
+	}
 }
