@@ -206,7 +206,43 @@ vseprint(char *dst, char *edst, char *fmt, va_list arg)
 				case 'X':
 					w = printhexstr(w, edst, va_arg(fmtarg.arg, uint8*), va_arg(fmtarg.arg, uint));
 					goto break2;
+				
+				case 'F':
+				{	/* TODO: support other bases, and arbitrary sizes */
+					uvlong luv;
+					int neg = 0;
+					long mul;
+					int i;
 
+					if(fl&FlagLongLong){
+						if(fl&FlagUnsigned)
+							luv = va_arg(fmtarg.arg, uvlong);
+						else
+							luv = va_arg(fmtarg.arg, vlong);
+					}else{
+						if(fl&FlagLong){
+							if(fl&FlagUnsigned)
+								luv = va_arg(fmtarg.arg, ulong);
+							else
+								luv = va_arg(fmtarg.arg, long);
+						}else{
+							if(fl&FlagUnsigned)
+								luv = va_arg(fmtarg.arg, uint);
+							else
+								luv = va_arg(fmtarg.arg, int);
+						}
+					}
+					
+					if(!(fl&FlagUnsigned) && (vlong)luv < 0){
+						neg = 1;
+						luv = -luv;
+					}
+
+					if(neg) w = printstr(w, edst, "-", 1);
+					w = seprint(w, edst, "%d.%3d", luv/1000, luv%1000);
+
+					goto break2;
+				}
 				case 'r':
 					fmtarg.dst = w;
 					fmtarg.edst = edst;

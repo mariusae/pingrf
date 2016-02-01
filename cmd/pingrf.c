@@ -107,16 +107,15 @@ main(int argc, char **argv)
 		print("%4d/%2d/%2d %2d:%2d\n", 
 			ps.year, ps.month, ps.day, ps.hour, ps.minute);
 		print("	Insulin remaining: %d\n", ps.insulinleft);
-		print("	IOB: %d.%2d\n", ps.iob/1000, ps.iob%1000);
-		print("	Basal: %d.%3d\n", ps.basal/1000, ps.basal%1000);
+		print("	IOB: %uF\n", ps.iob);
+		print("	Basal: %uF\n", ps.basal);
 		print("	Temp: %d %d/%d\n", ps.temp, ps.temptime, ps.temptotal);
-		print("	Last bolus: %d.%2d\n", ps.lastbolus/1000, ps.lastbolus%1000);
+		print("	Last bolus: %uF\n", ps.lastbolus);
 		if(ps.comboactive){
-			print("	Combo active %2d:%2d-%2d:%2d %d.%3d/%d.%3d\n", 
+			print("	Combo active %2d:%2d-%2d:%2d %uF/%uF\n", 
 				ps.combostarthour, ps.combostartminute,
 				ps.comboendhour, ps.comboendminute,
-				ps.combodelivered/1000, ps.combodelivered%1000,
-				ps.combototal/1000, ps.combototal%1000);
+				ps.combodelivered, ps.combototal);
 		}else{
 			print("	No combo active\n");
 		}
@@ -237,7 +236,7 @@ rcallimpl(Rcall *tx, Rcall *rx)
 	uint8 buf[RCALLMAX];
 
 	dprint("tx %R\n", tx);
-	dprinthex(tx->pkt, Npkt);
+	dprinthex(tx->pkt, 8+tx->pkt[3]);
 
 	if(convR2M(tx, buf, sizeof buf) == 0)
 		return -1;
@@ -273,7 +272,7 @@ rcallimpl(Rcall *tx, Rcall *rx)
 	}
 
 	dprint("rx %R\n", rx);
-	dprinthex(rx->pkt, Npkt);
+	dprinthex(rx->pkt, 8+rx->pkt[3]);
 	
 	return 0;
 }

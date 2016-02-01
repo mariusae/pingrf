@@ -237,37 +237,33 @@ Pcallfmt(Fmt *f)
 	{
 		Mstatus *s = &c->status;
 
-		return fmtprint(f,  "Rstatus  %4d/%d/%d %d:%2d basal %d.%3d insulin %dU temp %d %d/%d",
+		return fmtprint(f,  "Rstatus  %4d/%d/%d %d:%2d basal %uF insulin %dU temp %d %d/%d",
 			s->year, s->month, s->day, s->hour, s->minute,
-			s->basal/1000, s->basal%1000, s->insulin,
-			s->temp, s->temptime, s->temptotal);
+			s->basal, s->insulin, s->temp, s->temptime, s->temptotal);
 	}
 
 	case Rstatus1:
 	{
 		Mstatus1 *s = &c->status1;
-		return fmtprint(f, "Rstatus1 %d-%s insulin %dU, daily %d.%2dU hourly %d.%3dU",
-			s->prognum, s->progname, s->insulin,
-			s->daily/1000, s->daily%1000,
-			s->hourly/1000, s->hourly%1000);
+		return fmtprint(f, "Rstatus1 %d-%s insulin %dU, daily %uFU hourly %uFU",
+			s->prognum, s->progname, s->insulin, s->daily, s->hourly);
 	}
 
 	
 	case Rstatus2:
 	{
 		Mstatus2 *s = &c->status2;
-		return fmtprint(f, "Rstatus2 bolus %d.%3d %4d/%d/%d %2d:%2d iob %d.%2d",
+		return fmtprint(f, "Rstatus2 bolus %d.%3d %4d/%d/%d %2d:%2d iob %uF",
 			s->bolus/1000, s->bolus%1000,
 			s->year, s->month, s->day,
-			s->hour, s->minute, s->iob/1000, s->iob%1000);
+			s->hour, s->minute, s->iob);
 	}
 	
 	case Rstatus3:
 	{
 		Mstatus3 *s = &c->status3;
-		return fmtprint(f, "Rstatus3 bolus %d.%3d basal %d.%3d temp=%d suspend=%d",
-			s->bolus/1000, s->bolus%1000, s->basal/1000, s->basal%1000,
-			s->temp, s->suspend);
+		return fmtprint(f, "Rstatus3 bolus %F basal %uF temp=%d suspend=%d",
+			s->bolus, s->basal, s->temp, s->suspend);
 	}
 
 	case Rcancelcombo:

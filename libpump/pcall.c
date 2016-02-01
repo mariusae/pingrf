@@ -1,7 +1,5 @@
 #include "pumpimpl.h"
 
-static uint8 lastrx[Npkt];
-
 static uint8 tagseq[] = {
 	0x00, 0x0e, 0xf8, 0x12, 0xea,
 	0x24, 0xdc, 0x36, 0xc0, 0x4e,
@@ -50,11 +48,7 @@ _pcall(Pcall *tx, Pcall *rx)
 		break;
 
 	case Tadjourn:
-		/* This is really a hack: 
-		 * we should really have this be a tx-only
-		 * request. */
 		preamblems = 0;
-		timeoutms = 10;
 		tries = 1;
 		break;
 
@@ -122,26 +116,48 @@ _ptxrx(Pcall *ptx, Pcall *prx, uint16 timeoutms, uint16 preamblems)
 	if(convC2P(ptx, tx.pkt) < 0)
 		return -1;
 
-	if(rcall(&tx, &rx) < 0)
-		return -1;
+	switch(ptx->type){
+	default:
+		tx.type = Ttxrx;
+		tx.timeoutms = timeoutms;
+		tx.preamblems = preamblems;
 
-	if(rx.type == Rerr){
-		if(rx.err == Etimeout)
-			return 0;
-		else
+		if(rcall(&tx, &rx) < 0)
 			return -1;
+	
+		if(rx.type == Rerr){
+			if(rx.err == Etimeout)
+				return 0;
+			else
+				return -1;
+		}
+
+		if(convP2C(rx.pkt, prx) < 0)
+			return -1;
+	
+		/* TODO: push this as a filter down to the radio */
+		if(prx->tag != (ptx->tag^0xff)){
+			werrstr("bad reply tag");
+			return -1;
+		}
+		
+		break;
+
+	case Tadjourn:
+		tx.type = Ttx;
+		tx.preamblems = preamblems;
+		
+		if(rcall(&tx, &rx) < 0)
+			return -1;
+		
+		if(rx.type == Rerr)
+			return -1;
+		
+		prx->type = Radjourn;
+		
+		break;		
 	}
 
-	if(convP2C(rx.pkt, prx) < 0)
-		return -1;
-
-	/* TODO: push this as a filter down to the radio */
-	if(prx->tag != (ptx->tag^0xff)){
-		werrstr("bad reply tag");
-		return -1;
-	}
-
-	memcpy(lastrx, rx.pkt, Npkt);
 
 	return 1;
 }

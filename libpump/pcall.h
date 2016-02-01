@@ -100,9 +100,10 @@ enum
 	Rwakeup = Twakeup+0xff,
 	
 	Tkeepalive = 0x03,
-	Rkeepalive = 0x03+0xff,
+	Rkeepalive = Tkeepalive+0xff,
 	
 	Tadjourn = 0x05,
+	Radjourn = Tadjourn+0xff,
 	
 	T2c = 0x2c,
 	R2c = T2c+0xff,
