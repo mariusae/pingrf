@@ -27,18 +27,11 @@ pcall(Pcall *tx, Pcall *rx)
 	return 0;
 }
 
-void
-pcallinit(Pcall *pc, int type)
-{
-	memset(pc, 0, sizeof *pc);
-	pc->type = type;
-}
-
 int
 _pcallsimple(int type)
 {
 	static Pcall tx, rx;
-	pcallinit(&tx, type);
+	tx.type = type;
 	return _pcall(&tx, &rx);
 }
 
@@ -83,7 +76,7 @@ _pcall(Pcall *tx, Pcall *rx)
 		 * Note that it's an overkill for non-bolus requests,
 		 * we might consider adapting this. */
 		taskdelay(2000);
-		pcallinit(&tx1, Tkeepalive);
+		tx1.type = Tkeepalive;
 		if((rv=_pcall1(&tx1, rx, timeoutms*2, 0, 2)) != 1)
 			return rv;
 	}
@@ -129,27 +122,6 @@ _ptxrx(Pcall *ptx, Pcall *prx, uint16 timeoutms, uint16 preamblems)
 	if(convC2P(ptx, tx.pkt) < 0)
 		return -1;
 
-	switch(ptx->type){
-	default: break;
-	case Tstatus:
-	case Tstatus1:
-	case Tstatus2:
-	case Tstatus3:
-	
-	case Tkeepalive:
-	
-	case Tack1:
-	case Tack2:
-	case Tack3:
-	case Tadjourn:
-		// Flags should be set separately.
-		memcpy(tx.pkt+8, lastrx+8, Npkt-8-2);
-		break;
-	case Twakeup:
-		memcpy(tx.pkt+16, lastrx+16, Npkt-16);
-		break;
-	}
-
 	if(rcall(&tx, &rx) < 0)
 		return -1;
 
@@ -177,7 +149,13 @@ _ptxrx(Pcall *ptx, Pcall *prx, uint16 timeoutms, uint16 preamblems)
 int
 _presume()
 {
+	static Rcall tx, rx;
+
 	tagseqidx = 0;
+	
+	/* We try to reset the radio for good measure. */
+	tx.type = Treset;
+	rcall(&tx, &rx);
 
 	switch(_pcallsimple(Twakeup)){
 	case 1:	break;
@@ -195,14 +173,58 @@ _presume()
 int
 _padjourn()
 {
-	static Pcall tx, rx;
-
 	/*
 	 * TODO: use a pure TX-only here
 	 * instead of relying on the timeout.
 	 */
-	pcallinit(&tx, Tadjourn);
 	_pcallsimple(Tadjourn);
 
 	return 0;
+}
+
+int
+_preset()
+{
+	_padjourn();
+	return _presume();
+}
+
+void
+pxxx()
+{
+	static Pcall tx, rx;
+
+	if(_presume() < 0)
+		panic("presume: %r");
+
+	tx.type = T2c;
+	if(_pcall(&tx, &rx) != 1)
+		panic("pcall: %r");
+
+	if(rx.flag&Fwarn){		fprint(2, "Warning emitted; clearing.\n");
+
+		_padjourn();
+		if(_presume() < 0)
+			panic("presume: %r");
+		tx.type = Tclearwarn;
+		if(_pcall(&tx, &rx) != 1)
+			panic("pcall: %r");
+		
+		_padjourn();
+		if(_presume() < 0)
+			panic("presume: %r");
+	}else{
+		fprint(2, "No warning emitted\n");
+	}
+
+	tx.type = Tstatus;
+	if(_pcall(&tx, &rx) != 1)
+		panic("pcall: %r");
+
+	if(rx.flag&Fwarn)
+		fprint(2, "Rstatus warn\n");
+	else
+		fprint(2, "Rstatus nowarn\n");
+
+	_padjourn();
 }

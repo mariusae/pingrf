@@ -20,6 +20,9 @@ enum
 	Tmax,
 
 	Rerr = 128,	// [1]size [1]Rerr [1]err
+	
+	Treset = 0xff-1,	// A special Rcall to reset the radio
+	Rreset,
 };
 
 enum
@@ -51,5 +54,6 @@ uint	convM2R(uint8 *p, uint8 n, Rcall *r);
 uint	convR2M(Rcall *r, uint8 *ap, uint8 n);
 void	rcallfmt(Fmt*);
 
-/* This must be provided by an underlying implementation. */
+/* These must be provided by an underlying implementation. */
 int	radiorpc(uint8 *buf);
+int	radioreset();

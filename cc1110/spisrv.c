@@ -82,7 +82,6 @@ srvtx()
 	txsz = txcall[0];
 	txh = stuff(txcall, txsz);
 	txstate = Sheader;
-	dprint("sending.. %d bytes: %x %x %x\n", txsz, txh, txcall[0], txcall[1]);
 }
 
 void

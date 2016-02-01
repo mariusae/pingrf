@@ -16,9 +16,22 @@ typedef struct
 	
 	uint iob;
 	uint lastbolus;
+	
+	/* Temporary. */
+	uint comboactive;
+	uint combostarthour;
+	uint combostartminute;
+	uint comboendhour;
+	uint comboendminute;
+	uint combodelivered;
+	uint combototal;
+	
+	uint haswarning;
 } Pstat;
 
 
 int	pstat(Pstat*);
 int	pcombo(uint insulin, uint minutes);
 int	pcancel();
+int	pclearwarning();
+

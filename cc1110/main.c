@@ -67,7 +67,7 @@ main(void)
 	// Enables interrupts. (Go go go)
 	EA = 1;
 
-	dprint("ping2ble CC1110 started.\n");
+	dprint("pingrf started.\n");
 	
 	srvrx();
 	for(;;){
@@ -90,7 +90,6 @@ main(void)
 				break;
 
 			nextcall(&c);
-			dprint("call %d\n", c.type);
 			waitflag = clearflag = 0;
 			call(&c, &state, &waitflag, &clearflag);
 

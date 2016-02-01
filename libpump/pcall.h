@@ -1,6 +1,9 @@
 
 typedef struct
 {
+
+	
+
 	uint8 month;
 	uint8 day;
 	uint8 hour;		// 24h
@@ -55,6 +58,24 @@ typedef struct
 	uint suspend;
 } Mstatus3;
 
+typedef struct
+{
+	uint active;
+	
+	uint year;
+	uint month;
+	
+	uint starthour;
+	uint startminute;
+	uint endhour;
+	uint endminute;
+	
+	uint delivered;
+	uint total;
+
+} Mstatus4;
+
+
 /* This only permits 0:100 combos for now;
  * time must be in increments of 5 minutes. */
 typedef struct
@@ -82,6 +103,9 @@ enum
 	Rkeepalive = 0x03+0xff,
 	
 	Tadjourn = 0x05,
+	
+	T2c = 0x2c,
+	R2c = T2c+0xff,
 
 	Tstatus = 0x50,
 	Rstatus = Tstatus+0xff,
@@ -94,7 +118,10 @@ enum
 
 	Tstatus3 = 0x27,
 	Rstatus3 = Tstatus3+0xff,
-	
+
+	Tstatus4 = 0x26,
+	Rstatus4 = Tstatus4+0xff,
+
 	Tcancelcombo = 0x35,
 	Rcancelcombo = Tcancelcombo+0xff,
 
@@ -114,15 +141,25 @@ enum
 	
 	Tcombo = 0x37,
 	Rcombo = Tcombo+0xff,
+	
+	Tclearwarn = 0x45,
+	Rclearwarn = 0x45+0xff,
 
 	Rerror = -1
+};
+
+enum
+{
+	Fwarn = 1
 };
 
 typedef struct
 {
 	int type;
 	uint8 tag;
-	uint8 arg;
+	uint8 size;
+
+	uint8 flag;
 
 	union
 	{
@@ -131,18 +168,16 @@ typedef struct
 		Mstatus1 status1;
 		Mstatus2 status2;
 		Mstatus3 status3;
+		Mstatus4 status4;
 		Mcombo combo;
 	};
 } Pcall;
 
 int	pcall(Pcall*, Pcall*);
-void	pcallinit(Pcall *pc, int type);
 
 int	convP2C(uint8 *p, Pcall *c);
 int	convC2P(Pcall *c, uint8 *p);
 void	Pcallfmt(Fmt *f);
 
-// XXX
-int pxxx();
 
 int	pumpaddchk(void *v, uint n, uint32 chk);

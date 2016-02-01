@@ -37,6 +37,8 @@ char*
 printstr(char *dst, char *edst, char *s, int size)
 {
 	int l, n, sign;
+	
+	if(s == nil) s = "<nil>";
 
 	sign = 1;
 	if(size < 0){

@@ -5,7 +5,7 @@ char *argv0;
 
 /* char *ttypath = "/dev/tty.usbserial"; */
 char *ttypath = "/dev/cu.usbserial-AH03IMYO";
-speed_t ttybaud = 57600;
+speed_t ttybaud = 19200;
 int tty;
 int debug = 0;
 
@@ -18,10 +18,13 @@ void	call(int type);
 int	rcallimpl(Rcall *tx, Rcall *rx);
 
 static void chklearn();
+static void	ping();
 
 extern int (*_rcallimpl)(Rcall*, Rcall*);
 
 uint32	crc32(void*, uint);
+
+void pxxx();
 
 static struct
 {
@@ -33,6 +36,7 @@ static struct
 	{"status1", Tstatus1, "Retreive status screen 1 from the pump"},
 	{"status2", Tstatus2, "Retriece status screen 2 from the pump"},
 	{"status3", Tstatus3, "Retrieve status screen 3 from the pump"},
+	{"status4", Tstatus4, "Retrieve status screen 4 from the pump"},
 	{"cancelcombo", Tcancelcombo, "Cancel an existing combo bolus"}
 };
 
@@ -43,6 +47,7 @@ main(int argc, char **argv)
 	uint8 buf[256];
 	uint n;
 	float insulin, hours;
+	uint dox = 0;
 	
 	_rcallimpl = &rcallimpl;
 
@@ -59,6 +64,9 @@ main(int argc, char **argv)
 	case 'd':
 		debug = 1;
 		break;
+	case 'x':
+		dox = 1;
+		break;
 	case 'h':
 		usage();
 	}ARGEND
@@ -67,6 +75,9 @@ main(int argc, char **argv)
 		usage();
 
 	opentty();
+	radioreset();
+
+	if(dox) pxxx();
 
 	if(strcmp(argv[0], "chkadd") == 0){
 		if(argc < 3)
@@ -85,6 +96,8 @@ main(int argc, char **argv)
 			panic("unhexlify: %r");
 
 		print("crc32(%s) = %8ux\n", argv[1], crc32(buf, n));
+	}else if(strcmp(argv[0], "ping") == 0){
+		ping();
 	}else if(strcmp(argv[0], "stat") == 0){
 		Pstat ps;
 		
@@ -98,6 +111,20 @@ main(int argc, char **argv)
 		print("	Basal: %d.%3d\n", ps.basal/1000, ps.basal%1000);
 		print("	Temp: %d %d/%d\n", ps.temp, ps.temptime, ps.temptotal);
 		print("	Last bolus: %d.%2d\n", ps.lastbolus/1000, ps.lastbolus%1000);
+		if(ps.comboactive){
+			print("	Combo active %2d:%2d-%2d:%2d %d.%3d/%d.%3d\n", 
+				ps.combostarthour, ps.combostartminute,
+				ps.comboendhour, ps.comboendminute,
+				ps.combodelivered/1000, ps.combodelivered%1000,
+				ps.combototal/1000, ps.combototal%1000);
+		}else{
+			print("	No combo active\n");
+		}
+		if(ps.haswarning)
+			print("	WARNING ACTIVE\n");
+	}else if(strcmp(argv[0], "clearwarning") == 0){
+		if(pclearwarning() < 0)
+			panic("pclearwarning: %r");
 	}else if(strcmp(argv[0], "combo") == 0){
 		if(argc != 3)
 			usage();
@@ -181,7 +208,7 @@ opentty()
 	ts.c_cc[VMIN]  = 1;
 	ts.c_cc[VTIME] = 0;
 
-	ts.c_cflag |= CS8|CLOCAL|CREAD|B57600;
+	ts.c_cflag |= CS8|CLOCAL|CREAD|B19200;
 	ts.c_iflag &= ~(BRKINT|ICRNL|INPCK|ISTRIP|IXON);
 	ts.c_oflag &= ~OPOST;
 	ts.c_cflag &= ~(CSIZE|PARENB);
@@ -311,6 +338,19 @@ radiorpc(uint8 *buf)
 	return -1;
 }
 
+int
+radioreset()
+{
+	static uint8 ff = 0xff;
+	
+	if(write(tty, &ff, 1) < 0)
+		return -1;
+	
+	usleep(250*1000);
+
+	return 0;
+}
+
 static void
 chklearn()
 {
@@ -331,4 +371,16 @@ chklearn()
 		fprint(2, "learned chk(%2x%2x%2x%2x) = %8ux\n",
 			rx.pkt[0], rx.pkt[1], rx.pkt[2], rx.pkt[3], chk32);
 	}
+}
+
+static void
+ping()
+{
+	Rcall tx, rx;
+	
+	tx.type = Tping;
+	if(rcall(&tx, &rx) < 0)
+		panic("rcall: %r");
+	
+	print("%R\n", &rx);
 }

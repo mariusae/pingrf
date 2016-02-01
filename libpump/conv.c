@@ -9,51 +9,74 @@ static char* strpcallerr(int err);
  * e.g., the type is adjusted to account for this.
  */
 int
-convP2C(uint8 *p, Pcall *c)
+convP2C(uint8 *ap, Pcall *c)
 {
-	pcallinit(c, p[0]+0xff);
+	uint8 *p = ap;
+	uint size;
+
+	c->type = 0xff + *p++;
+	if(*p++ != 0)
+		return 0;
+	c->tag = *p++;
+	size = c->size = *p++;
+
+	/* TODO: check checksum */
+	p += 4;
 
 	c->err = Eok;
-	c->tag = p[2];
-	c->arg = p[3];
-
 	switch(c->type){
-	default: return 0;
+	default: break;
 
+	/* TODO: check against sizes */
 	case Rstatus:
 	{
 		Mstatus *s = &c->status;
-		s->year = 2007 + (p[12]&0xf);
-		s->month = 1 + (p[12]>>4);
-		s->day = p[13];
-		s->hour = p[14];
-		s->minute = p[15];
-		s->basal = (p[21]<<8) | p[20];
-		s->insulin = p[22];
+
+		/* 4 bytes unknown */
+
+		s->year = 2007 + (p[4]&0xf);
+		s->month = 1 + (p[4]>>4);
+		s->day = p[5];
+		s->hour = p[6];
+		s->minute = p[7];
+
+		/* 5 bytes unknown */
+
+		s->basal = (p[13]<<8) | p[12];
+		s->insulin = p[14];
 		
-		if(!(p[25]&0x1))
+		/* 3 bytes unknown */
+		
+		if(!(p[17]&0x1))
 			s->temp = 0;
-		else if(p[26] > 128)
-			s->temp = (int8)-(256-p[26]);
+		else if(p[18] > 128)
+			s->temp = (int8)-(256-p[18]);
 		else
-			s->temp = p[26];
+			s->temp = p[18];
+		
+		/* 2 bytes unknown */
 
-		s->temptotal = p[30]*60 + p[31];
-		s->temptime = s->temptotal-(p[28]*60 + p[29]);
-
+		s->temptotal = p[22]*60 + p[23];
+		s->temptime = s->temptotal-(p[20]*60 + p[21]);
+		
 		break;
 	}
 
 	case Rstatus1:
 	{
 		Mstatus1  *s = &c->status1;
-		s->prognum = p[9];
-		memcpy(s->progname, p+16, 10);
-		s->progname[10] = 0;
-		s->insulin = p[14];
-		s->daily = 10*((p[11]<<8) | p[10]);
-		s->hourly = (p[13]<<8) | p[12];
+
+		s->prognum = p[1];
+
+		s->insulin = p[6];
+		s->daily = 10*((p[3]<<8) | p[2]);
+		s->hourly = (p[5]<<8) | p[4];
 		
+		/* p[7] unknown. */
+
+		memcpy(s->progname, p+8, 10);
+		s->progname[10] = 0;
+
 		 break;
 	}
 	
@@ -62,14 +85,13 @@ convP2C(uint8 *p, Pcall *c)
 		Mstatus2 *s = &c->status2;
 
 		// Last bolus 
-		s->year = 2007 + (p[14]&0xf);
-		s->month = 1 + (p[14]>>4);
-		s->day = p[15];
-		s->hour = p[16];
-		s->minute = p[17];
-		s->bolus = (p[13]<<8) | p[12];
-		s->iob = 10*((p[25]<<8) | p[24]);
-
+		s->year = 2007 + (p[6]&0xf);
+		s->month = 1 + (p[6]>>4);
+		s->day = p[7];
+		s->hour = p[8];
+		s->minute = p[9];
+		s->bolus = (p[5]<<8) | p[4];
+		s->iob = ((p[17]<<8) | p[16]);
 		break;
 	}
 
@@ -77,79 +99,123 @@ convP2C(uint8 *p, Pcall *c)
 	{
 		Mstatus3 *s = &c->status3;
 
-		s->bolus = U32GETLE(p+12);
-		s->basal = U32GETLE(p+16);
-		s->temp = p[10] & 0x1;
-		s->suspend = p[10] & 0x2;
-	}
-
-	case Rcancelcombo:
-		/* TODO: figure this one out. */
-/*		switch(p[2]){
-		case 0x07:	c->err = Eok; break;
-		case 0x15:	c->err = Enocombo; break;
-		default:		c->err = Eunknown;
-		}
-*/
-		break;
+		s->bolus = U32GETLE(p+4);
+		s->basal = U32GETLE(p+8); 
+		panic("bug");
+		s->temp = p[2] & 0x1;
+		s->suspend = p[2] & 0x2;
 	}
 	
+	case Rstatus4:
+	{
+		Mstatus4 *s = &c->status4;
+		
+		s->active = p[1] == 0x01; /* tbd. */
+		
+		s->year = 2007+(p[2]&0xf);
+		s->month = 1+(p[2]>>4);
+		
+		s->starthour = p[4];
+		s->startminute = p[5];
+		s->endhour = p[6];
+		s->endminute = p[7];
+		
+		s->delivered = U16GETLE(p+8);
+		s->total = U16GETLE(p+10);
+
+	}
+
+
+	}
+
+	/* Fill status bits where we (think) we have them. */
+	switch(c->type){
+	case Rcombo:
+	case R2c:
+	case Rstatus:
+		if(p[0] & BIT(4))
+			c->flag |= Fwarn;	
+	}
+	
+	/* TODO: check against size */
 
 	return 0;
 }
 
+static uint sizeC2P[256] = {
+	[Twakeup] = 4,
+	[Tcombo] = 28,
+	[Tclearwarn] = 2,
+};
+
 int
-convC2P(Pcall *c, uint8 *p)
+convC2P(Pcall *c, uint8 *ap/*[Npkt]]*/)
 {
-	memset(p, 0, Npkt);
-	
-	p[0] = c->type;
-	p[1] = 0;
-	p[2] = c->tag;
-	p[3] = c->arg;
+	uint8 *p = ap;
+	uint32 chk;
+	uint size = sizeC2P[c->type];
+
+	*p++ = c->type;
+	*p++ = 0;
+	*p++ = c->tag;
+	*p++ = size;
+
+	if(pumpchk(p-4, 4, &chk) < 0)
+		return -1;
+
+	U32PUTLE(p, chk);
+	p += 4;
+
+	/* Clear out our garbage. */
+	memset(p, 0, Npkt-8);
 
 	switch(c->type){
 	default:	break;
 
 	case Twakeup:
-	{
-		static uint8 wakeup[] = {
-			0x49, 0x01, 0x2d, 0x14, 	/* this seems be required, */
-			0x50, 0x8b, 0xdb, 0xb9	/* not sure why yet */
-		};
-
-		/* Required arg. 0x4 seems to be used  */
-		p[3] = 0x04;
-		memcpy(p+8, wakeup, sizeof wakeup);
+		*p++ = 0x49;
+		*p++ = 0x01;
+		*p++ = 0x2d;
+		*p++ = 0x14;
 		break;
-	}
 
 	case Tcombo:
-		/* Arg required. */
-		p[3] = 0x1c;
-		
 		if(c->combo.minutes % 6 != 0){
 			/* The pump does not seem to accept other durations. */
 			werrstr("combo duration must be a multiple of 6");
 			return -1;
 		}
 
-		/* Do we need to set flag=78? */
-		p[8] = 0x01, p[9] = 0x00;
+		*p++ = 0x01;
+		*p++ = 0x00;
 
-		/* They seem to be in "extra careful" mode here.
-		 */
-		U16PUTLE(p+10, c->combo.insulin);
-		U16PUTLE(p+12, 0xffff^c->combo.insulin);
-		p[14] = c->combo.minutes/6;
-
-		if(pumpchkpayload(p) < 0)
-			return -1;
+		/* They seem to be in "extra careful" mode here. */
+		U16PUTLE(p, c->combo.insulin);
+		p += 2;
+		U16PUTLE(p, 0xffff^c->combo.insulin);
+		p += 2;
+		*p++ = c->combo.minutes/6;
+		
+		/* zeroes! (for now) */
+		p += 28-7;
 
 		break;
+
+	case Tclearwarn:
+		*p++ = 0xa7;
+		*p++ = 0x01;
+		break;
+	}
+	
+	if(p-ap!=size+8)
+		return -1;
+
+	if(size > 0){
+		chk = crc32(ap+8, size);
+		U32PUT(p, chk);
 	}
 
-	return pumpchkhd(p);
+	return 0;
 }
 
 void

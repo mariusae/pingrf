@@ -39,6 +39,7 @@ calltxrx(Rcall *c, uint8 *state, uint8 *waitflag, uint8 *clearflag)
 		break;
 
 	case Txrxing:
+		rfidle();
 		if(*waitflag&Falarm){
 			c->type = Rerr;
 			c->err = Etimeout;

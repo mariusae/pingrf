@@ -12,6 +12,11 @@ rcall(Rcall *tx, Rcall *rx)
 	if(_rcallimpl != nil)
 		return _rcallimpl(tx, rx);
 
+	if(tx->type == Treset){
+		rx->type = Rreset;
+		return radioreset();
+	}
+
 	if(convR2M(tx, buf, sizeof buf) == 0){
 		werrstr("invalid tx message");
 		return -1;

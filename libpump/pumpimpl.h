@@ -15,6 +15,7 @@ extern uint8	challengetab[256];
 int	_pcall(Pcall *tx, Pcall *rx);
 int	_presume();
 int	_padjourn();
+int	_preset();
 int	_pcallsimple(int type);
 
 /* libtask */

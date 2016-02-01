@@ -46,3 +46,10 @@ radiorpc(uint8 *buf)
 	werrstr("not implemented");
 	return -1;
 }
+
+int
+radioreset()
+{
+	werrstr("not implemneted");
+	return -1;
+}
