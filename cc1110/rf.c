@@ -23,7 +23,6 @@ enum
 static volatile uint8 mode = Rfidle;
 static volatile uint16 nwakeup;
 
-
 void
 rfinit()
 {

@@ -32,19 +32,28 @@ enum
 
 enum
 {
+	Ffilterbyte3 = 1
+};
+
+enum
+{
 	Emissing = 1,
 	Ebadcall =2,
 	Etimeout
 };
 
-#define RCALLMAX (1/*size*/ + 1/*type*/ + 2/*preamblems*/ + 2/*timeout*/ + Npkt)
+#define RCALLMAX (1/*size*/ + 1/*type*/ + 2/*preamblems*/ + 2/*timeout*/ + 1/*flags*/ + 1/*filterbyte3*/+ Npkt)
 
 typedef struct 
 {
 	uint8 type;
+	uint8 flag;
+
 	uint8 err;
 	uint16 timeoutms;
 	uint16 preamblems;
+
+	uint8 filterbyte3;
 
 	uint8 pkt[Npkt];
 } Rcall;

@@ -23,26 +23,26 @@ main(int argc, char **argv)
 	Rcall r;
 	
 	r.type = Trx;
-	convR2M2R(&r, 1+1+2);
+	convR2M2R(&r, 1+1+1+1+2);
 	assert(r.type == Trx);
 	
 	r.type = Ttx;
 	r.preamblems = 10;
 	memcpy(r.pkt, testpkt, sizeof testpkt);
-	convR2M2R(&r, 1+1+2+Npkt);
+	convR2M2R(&r, 1+1+1+2+Npkt);
 	assert(r.type == Ttx);
 	assert(r.preamblems == 10);
 	assert(memcmp(r.pkt, testpkt, sizeof testpkt) == 0);
 	
 	r.type = Rrx;
 	memcpy(r.pkt, testpkt, sizeof testpkt);
-	convR2M2R(&r, 1+1+Npkt);
+	convR2M2R(&r, 1+1+1+Npkt);
 	assert(r.type == Rrx);
 	assert(memcmp(r.pkt, testpkt, sizeof testpkt) == 0);
 	
 	r.type = Rerr;
 	r.err = 123;
-	convR2M2R(&r, 1+1+1);
+	convR2M2R(&r, 1+1+1+1);
 	assert(r.type == Rerr);
 	assert(r.err == 123);
 	

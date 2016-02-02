@@ -1,7 +1,6 @@
 TARG ?= unix
 
-THISFILE = $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
-ROOT := $(dir $(abspath $(call THISFILE)))
+ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 vpath %.c $(ROOT)
 vpath %.h $(ROOT)
