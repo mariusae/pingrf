@@ -211,8 +211,6 @@ vseprint(char *dst, char *edst, char *fmt, va_list arg)
 				{	/* TODO: support other bases, and arbitrary sizes */
 					uvlong luv;
 					int neg = 0;
-					long mul;
-					int i;
 
 					if(fl&FlagLongLong){
 						if(fl&FlagUnsigned)
@@ -232,14 +230,14 @@ vseprint(char *dst, char *edst, char *fmt, va_list arg)
 								luv = va_arg(fmtarg.arg, int);
 						}
 					}
-					
+
 					if(!(fl&FlagUnsigned) && (vlong)luv < 0){
 						neg = 1;
 						luv = -luv;
 					}
 
 					if(neg) w = printstr(w, edst, "-", 1);
-					w = seprint(w, edst, "%d.%3d", luv/1000, luv%1000);
+					w = seprint(w, edst, "%ulld.%3ulld", luv/1000, luv%1000);
 
 					goto break2;
 				}
