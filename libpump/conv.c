@@ -13,6 +13,7 @@ convP2C(uint8 *ap, Pcall *c)
 {
 	uint8 *p = ap;
 	uint size;
+	uint32 chk, chk1;
 
 	c->type = 0xff + *p++;
 	if(*p++ != 0)
@@ -20,9 +21,27 @@ convP2C(uint8 *ap, Pcall *c)
 	c->tag = *p++;
 	size = c->size = *p++;
 
-	/* TODO: check checksum */
+	if(pumpchk(p-4, 4, &chk) == 0){
+		/* TODO: soft error/warning when we don't have it. */
+		if(chk != U32GETLE(p)){
+			werrstr("header checksum mismatch: got %8ux, expected %8ux", 
+				chk, U32GETLE(p));
+			return -1;
+		}
+	}
+	
 	p += 4;
-
+	
+	if(size > 0){
+		chk = crc32(p, size);
+		chk1 = U32GET(p+size);
+		if(chk != chk1){
+			werrstr("payload checksum mismatch: got %8ux, expected %8ux",
+				chk1, chk);
+			return -1;
+		}
+	}
+	
 	c->err = Eok;
 	switch(c->type){
 	default: break;
@@ -105,7 +124,7 @@ convP2C(uint8 *ap, Pcall *c)
 		s->temp = p[2] & 0x1;
 		s->suspend = p[2] & 0x2;
 	}
-	
+
 	case Rstatus4:
 	{
 		Mstatus4 *s = &c->status4;
