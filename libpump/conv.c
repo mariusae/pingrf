@@ -91,7 +91,7 @@ convP2C(uint8 *ap, Pcall *c)
 		s->hour = p[8];
 		s->minute = p[9];
 		s->bolus = (p[5]<<8) | p[4];
-		s->iob = ((p[17]<<8) | p[16]);
+		s->iob = 10* ((p[17]<<8) | p[16]);
 		break;
 	}
 
