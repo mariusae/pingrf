@@ -63,13 +63,9 @@ _pcall(Pcall *tx, Pcall *rx)
 		return rv;
 
 	while(rx->type == Rkeepalive){
-		/* This has been chosen experimentally and 
-		 * through sniffing sessions. It gives a good trade
-		 * off of not timing out and also having the pump
-		 * actually accept the keepalive.
-		 * Note that it's an overkill for non-bolus requests,
-		 * we might consider adapting this. */
-		taskdelay(2000);
+		/* The keepalive reply tells the remote to backoff
+		 * for the given number of milliseconds; we comply. */
+		taskdelay(rx->backoffms);
 		tx1.type = Tkeepalive;
 		if((rv=_pcall1(&tx1, rx, timeoutms*2, 0, 2)) != 1)
 			return rv;

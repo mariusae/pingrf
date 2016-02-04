@@ -394,23 +394,18 @@ printhex(uint8 *buf, uint n)
 
 	for(i=0; i < n/16; i++){
 		for(j=0; j < 16; j+=2)
-			print("%02x%02x ", buf[16*i+j], buf[16*i+j+1]);
+			print("%02x %02x ", buf[16*i+j], buf[16*i+j+1]);
 		for(j=0; j < 16; j++)
 			print("%c", isprint(buf[16*i+j]) ? buf[16*i+j] : '.');
 		print("\n");
 	}
 	
 	for(j=i*16; j<n; j++){
-		print("%02x", buf[j]);
-		if(j%2 == 1)
-			print(" ");
+		print("%02x ", buf[j]);
 	}
 	
-	while((j++)%16 > 0){
-		print("  ");
-		if(j%2 == 1)
-			print(" ");
-	}
+	while((j++)%16 > 0)
+		print("     ");
 	print(" ");
 	
 	for(j=i*16; j<n; j++)

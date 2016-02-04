@@ -82,7 +82,7 @@ typedef struct
 {
 	uint insulin;
 	uint minutes;
-} Mcombo;
+} Mbolus;
 
 enum
 {
@@ -127,26 +127,39 @@ enum
 	Rcancelcombo = Tcancelcombo+0xff,
 
 	/* These are .. not acks exactly.  More like "user still present" */
+	
+	Tbolusack = 0x30,
+	Rbolusack = Tbolusack+0xff,
+	
+	Tcomboack = 0x31,
+	Rcomboack = Tcomboack+0xff,
+	
+	Tdeliverycontinue = 0x32,
+	Rdeliverycontinue = Tdeliverycontinue+0xff,
+	
+	Tdeliverystatus = 0x33,
+	Rdeliverystatus = Tdeliverystatus+0xff,
+	
 
-	Tack0 = 0x30,
-	Rack0 = 0x30+0xff,
-	
-	Tack1 = 0x31,
-	Rack1 = Tack1+0xff,
-	
-	Tack2 = 0x33,
-	Rack2 = Tack2+0xff,
-	
+/*	This is some sort of delivery summary
 	Tack3 = 0x36,
 	Rack3 = Tack3+0xff,
-	
-	Tcombo = 0x37,
-	Rcombo = Tcombo+0xff,
+*/
+
+	Tbolus = 0x37,
+	Rbolus = Tbolus+0xff,
 	
 	Tclearwarn = 0x45,
 	Rclearwarn = 0x45+0xff,
 
 	Rerror = -1
+};
+
+enum
+{
+	DeliveryBusy,
+	DeliveryDone,
+	DeliveryUnknown,
 };
 
 enum
@@ -170,7 +183,9 @@ typedef struct
 		Mstatus2 status2;
 		Mstatus3 status3;
 		Mstatus4 status4;
-		Mcombo combo;
+		Mbolus bolus;
+		uint16 backoffms;		/* Rkeepalive */
+		uint deliverystatus;		/* Rdeliverystatus */
 	};
 } Pcall;
 

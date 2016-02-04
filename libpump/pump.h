@@ -31,7 +31,7 @@ typedef struct
 
 
 int	pstat(Pstat*);
-int	pcombo(uint insulin, uint minutes);
+int	pbolus(uint insulin, uint minutes);
 int	pcancel();
 int	pclearwarning();
 

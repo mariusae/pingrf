@@ -58,7 +58,7 @@ pstat(Pstat *ps)
 }
 
 int
-pcombo(uint insulin, uint minutes)
+pbolus(uint insulin, uint minutes)
 {
 	static Pcall tx, rx;
 
@@ -70,25 +70,43 @@ pcombo(uint insulin, uint minutes)
 	if(_presume() < 0)
 		return -1;
 
-	tx.type = Tcombo;
-	tx.combo.insulin = insulin;
-	tx.combo.minutes = minutes;
+	tx.type = Tbolus;
+	tx.bolus.insulin = insulin;
+	tx.bolus.minutes = minutes;
 	if(_pcall(&tx, &rx) != 1)
 		return -1;
 
-	tx.type = Tack1;
+	if(rx.bolus.insulin != insulin || rx.bolus.minutes != minutes){
+		werrstr("pump returned mismatch bolus parameters (i=%d, m=%d) vs expected (i=%d, m=%d)",
+			rx.bolus.insulin, rx.bolus.minutes, insulin, minutes);
+		return -1;
+	}
+
+	tx.type = minutes > 0 ? Tcomboack : Tbolusack;
 	if(_pcall(&tx, &rx) != 1)
 		return -1;
 
-	tx.type = Tack2;
-	if(_pcall(&tx, &rx) != 1)
-		return -1;
+	for(;;){
+		tx.type = Tdeliverystatus;
+		if(_pcall(&tx, &rx) != 1)
+			return -1;
 
-/*
-	tx.type = Tack3;
-	if(_pcall(&tx, &rx, 250, 0) != 1)
-		return -1;
-*/
+		switch(rx.deliverystatus){
+		case DeliveryBusy:
+			tx.type = Tdeliverycontinue;
+			if(_pcall(&tx, &rx) != 1)
+				return -1;
+			continue;
+		
+		case DeliveryUnknown:
+			werrstr("unknown delivery status");
+			return -1;
+		
+		case DeliveryDone:
+			break;
+		}
+		break;
+	}
 
 	_padjourn();
 

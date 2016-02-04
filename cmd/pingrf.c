@@ -124,15 +124,15 @@ main(int argc, char **argv)
 	}else if(strcmp(argv[0], "clearwarning") == 0){
 		if(pclearwarning() < 0)
 			panic("pclearwarning: %r");
-	}else if(strcmp(argv[0], "combo") == 0){
+	}else if(strcmp(argv[0], "bolus") == 0){
 		if(argc != 3)
 			usage();
 
 		insulin = strtof(argv[1], nil);
 		hours = strtof(argv[2], nil);
 		
-		if(pcombo((uint)(insulin*1000.0), (uint)(hours*60)) < 0)
-			panic("pcombo: %r");
+		if(pbolus((uint)(insulin*1000.0), (uint)(hours*60)) < 0)
+			panic("pbolus: %r");
 
 		print("ok\n");
 	}else if(strcmp(argv[0], "cancelcombo") == 0){
@@ -168,7 +168,7 @@ usage()
 	fprint(2, "Where command is one of:\n");
 	fprint(2, "  chkadd data checksum\n");
 	fprint(2, "	Add known data-checksum pair. Arguments are hexdecimal strings.\n");
-	fprint(2, "  combo insulin hours\n");
+	fprint(2, "  bolus insulin hours\n");
 	fprint(2, "	Issue a combo bolus for the given amount of insulin and time.\n");
 	fprint(2, "  cancelcombo\n");
 	fprint(2, "	Cancel a currently running combo bolus.\n");
