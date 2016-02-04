@@ -33,3 +33,70 @@ and invoke it. It's also useful in its own right, e.g.,:
 		Retrieve status screen 3 from the pump
 	  pcall cancelcombo
 		Cancel an existing combo bolus
+
+Setup instructions (for raspberry pi):
+	Once completed, pingrf can be used from raspberry pi shell to control
+	Ping using the commands above.
+
+HW required:
+	raspberry pi, ftdi/usb cable, cc1110 mini development kit
+	(pin header installed on cc1110 & some jumper wires between c1110 & ftdi/usb)
+
+HW setup:
+	1) connect cc1110 to raspberry pi using two connections
+		2.1 - raspberry pi <-> usb cable <-> cc debugger
+			<-> adapter <-> debug pins on cc1110
+			this connection is to program cc1110 and to power it up.
+			if properly connected, cc debugger will show green.
+			jumper on cc1110 should remain between p3/4 and
+			no need to install battery.
+		2.2  - raspbeery pi <-> ftdi/usb cable <-> cc1110 INT10 UART pins
+			P0.2 to TX on ftdi/usb cable
+			P0.3 to RX on ftdi/usb cable
+			P0.4 to RT on ftdi/usb cable
+			P0.5 to CT on ftdi/usb cable
+			this connection is to communicate between pingrf and cc1110.
+			wires are cross-wired. i.e. RX on cc1110 is connected to RX on ftdi
+
+
+SW setup
+	1) raspberry pi needs to be setup according to openaps instruction
+	2) install sdcc - compiler for cc1110 firmware
+		sudo apt-get install sddcc
+	3) install cc-tool - to program cc1110
+		get clone https://github.com/dashesy/cc-tool
+		sudo apt-get install libboost-all-dev
+		sudo apt-get install libusb-1.0-0-dev
+		cd to cc-tool directory
+		./configure
+		make
+		make install
+	4) clone pingrf repository
+	5) burn new firmware unto cc1110. once programmed, the board will reset
+		cd pingrf
+		cd cc1110
+		sudo make UART=1 flash
+	6) pingrf now needs to learn checksum for a given command
+		export TAP=<some directory>
+		makedir -p $TAP
+		cd pingrf
+		cd cmd
+		make
+		pingrf -d chklearn (now use pump remote to scroll through status pages)
+		control-c to terminate pingrf when you are done
+	7) pingrf is now ready
+		'pingrf stat' to see the pump status output
+
+debug hints
+	1) not every remote will use the same wake up payload. if the hardcoded
+		value in libpump/conv.c doesn't work, pingrf stat will time out.
+		capture the 0000 0004 related payload from "pingrf -d chklearn"
+		and replace those four bytes in order. example:
+
+			0000 0004 e02d 6bd2 AABB CCDD
+
+	2) if pingrf fails and complains about missing checksum, then pingrf didn't
+		learn the command/checksum combo as part of "pingrf -d chklearn".
+		just reissue the command and use your remote to replicate the
+		action that you are looking for pingrf to do. the existing
+		table will be added with new command/checksum combo
