@@ -110,6 +110,8 @@ main(int argc, char **argv)
 		print("	IOB: %uF\n", ps.iob);
 		print("	Basal: %uF\n", ps.basal);
 		print("	Temp: %d %d/%d\n", ps.temp, ps.temptime, ps.temptotal);
+		print("	Daily basal delivery: %uF\n", ps.dailybasal);
+		print("	Daily bolus delivery: %uF\n", ps.dailybolus);
 		print("	Last bolus: %uF\n", ps.lastbolus);
 		if(ps.comboactive){
 			print("	Combo active %2d:%2d-%2d:%2d %uF/%uF\n", 

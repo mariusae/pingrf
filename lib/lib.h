@@ -1,6 +1,5 @@
 #include <stdarg.h>
 
-#define 	nil	((void*)0)
 #define	nelem(x)	(sizeof(x)/sizeof((x)[0]))
 
 /* From $PLAN9/src/cmd/fossil/pack.c */

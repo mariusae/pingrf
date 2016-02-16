@@ -32,3 +32,5 @@ typedef long	int32;
 #define XDATA __xdata
 
 #define	USED(x)	if(x){}else{}
+
+#define 	nil	((void*)0)

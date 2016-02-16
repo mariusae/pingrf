@@ -27,11 +27,10 @@ $(O)/%.o : %.c
 	@echo "cc	-o$@	$<"
 	@$(CC) -c $(CFLAGS) -o$@ $<
 
-$(O)/%.o : %.s 
+$(O)/%.o : %.S
 	@mkdir -p $(dir $@)
 	@echo "cc	-o$@	$<"
 	@$(CC) -c $(CFLAGS) -o$@ $<
-
 
 config:
 	@echo $(O)

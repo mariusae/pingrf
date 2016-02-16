@@ -250,9 +250,10 @@ vseprint(char *dst, char *edst, char *fmt, va_list arg)
 					goto break2;
 
 				default: 
-					for(i=0; i<nelem(printers); i++)
+					for(i=0; i<nelem(printers); i++){
 					if(printers[i].c == *p)
 						break;
+					}
 
 					if(i == nelem(printers))
 						p = "X*verb*";
@@ -338,7 +339,7 @@ fmtprint(Fmt *f, char *fmt, ...)
 int
 vfprint(int fd, char *fmt, va_list arg) 
 {
-	static XDATA char buf[256];
+	/*static XDATA*/ char buf[256];
 
 	vseprint(buf, buf+sizeof buf, fmt, arg);
 	return write(fd, buf, strlen(buf));

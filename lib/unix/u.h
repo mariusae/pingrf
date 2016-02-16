@@ -33,3 +33,5 @@ typedef 	int64_t int64;
 #define PACKEDSTRUCT __attribute__((packed))
 #define REENTRANT
 #define XDATA 
+
+#define 	nil	((void*)0)

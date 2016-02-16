@@ -1,9 +1,10 @@
 
+
+/* 2c - may be some sort of configuration */
+
+
 typedef struct
 {
-
-	
-
 	uint8 month;
 	uint8 day;
 	uint8 hour;		// 24h
@@ -29,14 +30,12 @@ typedef struct
 	
 	uint8 insulin;
 
-	// This might be including temps..?
 	uint16 daily;		// milliunits/day
 	uint16 hourly;		// milliunits/hr
 } Mstatus1;
 
 typedef struct
 {
-
 	/* XXX these are last bolus time... */
 	uint8 hour;
 	uint8 minute;
@@ -50,9 +49,10 @@ typedef struct
 
 typedef struct
 {
+	/* "Delivery today" */
 	uint bolus;
 	uint basal;
-	
+
 	/* Turn these into flags? */
 	uint temp;
 	uint suspend;
@@ -64,6 +64,7 @@ typedef struct
 	
 	uint year;
 	uint month;
+	uint day;
 	
 	uint starthour;
 	uint startminute;

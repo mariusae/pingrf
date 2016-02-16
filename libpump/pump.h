@@ -16,9 +16,13 @@ typedef struct
 	
 	uint iob;
 	uint lastbolus;
-	
+
 	/* Temporary. */
 	uint comboactive;
+	uint comboyear;
+	uint combomonth;
+	uint comboday;
+
 	uint combostarthour;
 	uint combostartminute;
 	uint comboendhour;
@@ -26,6 +30,9 @@ typedef struct
 	uint combodelivered;
 	uint combototal;
 	
+	uint dailybasal;
+	uint dailybolus;	
+
 	uint haswarning;
 } Pstat;
 

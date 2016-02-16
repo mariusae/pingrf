@@ -33,6 +33,9 @@ pstat(Pstat *ps)
 		return -1;
 	
 	ps->comboactive = rx.status4.active;
+	ps->comboyear = rx.status4.year;
+	ps->combomonth = rx.status4.month;
+	ps->comboday = rx.status4.day;
 	ps->combostarthour = rx.status4.starthour;
 	ps->combostartminute = rx.status4.startminute;
 	ps->comboendhour = rx.status4.endhour;
@@ -51,6 +54,20 @@ pstat(Pstat *ps)
 
 	ps->lastbolus = rx.status2.bolus;
 	ps->iob = rx.status2.iob;
+	
+	if(_preset() < 0)
+		return -1;
+
+	tx.type = Tstatus;
+	if(_pcall(&tx, &rx) != 1)
+		return -1;
+
+	tx.type = Tstatus3;
+	if(_pcall(&tx, &rx) != 1)
+		return -1;
+
+	ps->dailybolus = rx.status3.bolus;
+	ps->dailybasal = rx.status3.basal;
 
 	_padjourn();
 
@@ -93,15 +110,13 @@ pbolus(uint insulin, uint minutes)
 
 		switch(rx.deliverystatus){
 		case DeliveryBusy:
+		case DeliveryUnknown:
+
 			tx.type = Tdeliverycontinue;
 			if(_pcall(&tx, &rx) != 1)
 				return -1;
 			continue;
-		
-		case DeliveryUnknown:
-			werrstr("unknown delivery status");
-			return -1;
-		
+
 		case DeliveryDone:
 			break;
 		}

@@ -141,12 +141,14 @@ convP2C(uint8 *ap, Pcall *c)
 	case Rstatus3:
 	{
 		Mstatus3 *s = &c->status3;
+		
+		s->temp = p[2] & 0x1;
+		s->suspend = p[2] & 0x2;
 
 		s->bolus = U32GETLE(p+4);
 		s->basal = U32GETLE(p+8); 
-		panic("bug");
-		s->temp = p[2] & 0x1;
-		s->suspend = p[2] & 0x2;
+
+		break;
 	}
 
 	case Rstatus4:
@@ -157,7 +159,7 @@ convP2C(uint8 *ap, Pcall *c)
 		
 		s->year = 2007+(p[2]&0xf);
 		s->month = 1+(p[2]>>4);
-		
+		s->day = p[3]; 
 		s->starthour = p[4];
 		s->startminute = p[5];
 		s->endhour = p[6];
