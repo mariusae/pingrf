@@ -2,6 +2,7 @@
 #include <lib.h>
 #include "pcall.h"
 
+#include <stdlib.h>
 #include <assert.h>
 
 int
@@ -38,6 +39,7 @@ main(int argc, char **argv)
 	dprint("%C\n", &c);
 
 	print("ok\n");
+  exit(0);
 }
 
 int

@@ -2,6 +2,7 @@
 #include <lib.h>
 #include "rcall.h"
 
+#include <stdlib.h>
 #include <assert.h>
 
 static uint8 testpkt[] = {
@@ -47,6 +48,7 @@ main(int argc, char **argv)
 	assert(r.err == 123);
 	
 	print("ok\n");
+  exit(0);
 }
 
 void
