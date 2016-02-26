@@ -3,9 +3,7 @@
 enum
 {
 	Hz = 101563, // 26e6/128/2
-	Khz = 102, 	// 26e3/128/2
-
-	MaxTicks = 2^16
+	Khz = 102 	// 26e3/128/2
 };
 
 static uint32 ticks;
