@@ -1,12 +1,13 @@
 
 OBJ = _build
 
+CODE_LOC := 0x0000
 CC = sdcc
 CFLAGS = --model-large --opt-code-size --std-c99
 LDFLAGS_FLASH = \
 	 --std-c99  \
 	--out-fmt-ihx \
-	--code-loc 0x000 --code-size 0x8000 \
+	--code-loc ${CODE_LOC} --code-size 0x8000 \
 	--xram-loc 0xf000  \
 	--iram-size 0x100 \
 	--xram-size 0x0f00 \
