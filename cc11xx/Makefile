@@ -92,7 +92,7 @@ $(OBJ):
 $(OBJ)/%.rel : %.c
 	$(CC) -c $(CFLAGS) -o$@ $<
 
-$(OBJ)/ping.hex: $(OBJ) $(REL) Makefile a.h
+$(OBJ)/ping.hex: $(OBJ) $(REL) Makefile impl.h
 	$(CC) $(LDFLAGS_FLASH) $(CFLAGS) -o $@ $(REL)
 
 flash: $(OBJ)/ping.hex
