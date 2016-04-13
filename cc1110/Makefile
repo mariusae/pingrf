@@ -1,5 +1,7 @@
 
-OBJ = _build
+S=$(GOPATH)/src
+
+OBJ = pkg/$(PROFILE)
 
 CODE_LOC := 0x0000
 CC = sdcc
@@ -10,19 +12,36 @@ LDFLAGS_FLASH = \
 	--code-loc ${CODE_LOC} --code-size 0x8000 \
 	--xram-loc 0xf000  \
 	--iram-size 0x100 \
-	--xram-size 0x0f00 \
+	--xram-size 0x0f00
 
-CFLAGS += -I../lib/8051
+CFLAGS += -I$(S)/tinyap.org/tiny9/8051/include
+CFLAGS += -I$(S)/tinyap.org/tiny9/include
 CFLAGS += -I../lib
-CFLAGS += -I..
+CFLAGS += -I../include
 CFLAGS += -DCC1110
 
-SRC = main.c rf.c timer.c call.c callrx.c calltx.c calltxrx.c callping.c cobs.c u.c conv.c
+SRC=\
+	main.c\
+	rf.c\
+	timer.c\
+	call.c\
+	callrx.c\
+	calltx.c\
+	calltxrx.c\
+	callping.c\
+	cobs.c\
+	u.c\
+	conv.c
 
-ifdef UART
+PROFILE = CC1110DK
+PROFILE<$(PROFILE)> = 1
+
+ifdef PROFILE<CC1110DK>
 SRC += uartsrv.c
-else
-SRC += spisrv.c
+endif
+
+ifdef PROFILE<ERF>
+SRC += uartsrv.c
 endif
 
 ifdef DEBUG
@@ -34,6 +53,8 @@ SRC += cc1110print.c
 else
 SRC += noprint.c
 endif
+
+CFLAGS += -DPROFILE=\"$(PROFILE).h\"
 
 ADB=$(addprefix $(OBJ)/, $(SRC:.c=.adb))
 ASM=$(addprefix $(OBJ)/, $(SRC:.c=.asm))
@@ -56,12 +77,12 @@ vpath %.c ../libradio
 all: $(OBJ)/ping.hex
 
 $(OBJ):
-	mkdir $@
+	mkdir -p $@
 
 $(OBJ)/%.rel : %.c
 	$(CC) -c $(CFLAGS) -o$@ $<
 
-$(OBJ)/ping.hex: $(OBJ) $(REL) Makefile a.h ../libradio/rcall.h ../lib/8051/u.h
+$(OBJ)/ping.hex: $(OBJ) $(REL) Makefile a.h
 	$(CC) $(LDFLAGS_FLASH) $(CFLAGS) -o $@ $(REL)
 
 flash: $(OBJ)/ping.hex

@@ -1,0 +1,34 @@
+-muwx
+-i pkg/CC1110DK/ping.hex
+-M
+-Y
+-I 0x0100
+-X 0x0f00
+-C 0x8000
+-b HOME = 0x0000
+-b XSEG = 0xf000
+-b PSEG = 0xf000
+-b ISEG = 0x0000
+-b BSEG = 0x0000
+-k /usr/local/bin/../share/sdcc/lib/large
+-k /usr/local/Cellar/sdcc/3.4.0/share/sdcc/lib/large
+-l mcs51
+-l libsdcc
+-l libint
+-l liblong
+-l libfloat
+pkg/CC1110DK/main.rel
+pkg/CC1110DK/rf.rel
+pkg/CC1110DK/timer.rel
+pkg/CC1110DK/call.rel
+pkg/CC1110DK/callrx.rel
+pkg/CC1110DK/calltx.rel
+pkg/CC1110DK/calltxrx.rel
+pkg/CC1110DK/callping.rel
+pkg/CC1110DK/cobs.rel
+pkg/CC1110DK/u.rel
+pkg/CC1110DK/conv.rel
+pkg/CC1110DK/uartsrv.rel
+pkg/CC1110DK/noprint.rel
+
+-e

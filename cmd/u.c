@@ -75,4 +75,3 @@ unhexlify(char *h, void* buf, uint *n)
 
 	return 0;
 }
-

@@ -25,11 +25,11 @@ convP2C(uint8 *ap, Pcall *c)
 		/* TODO: soft error/warning when we don't have it. */
 		if(chk != U32GETLE(p)){
 			werrstr("header checksum mismatch: got %8ux, expected %8ux", 
-				chk, U32GETLE(p));
+				U32GETLE(p), chk);
 			return -1;
 		}
 	}
-	
+
 	p += 4;
 	
 	if(size > 0){
@@ -264,10 +264,10 @@ convC2P(Pcall *c, uint8 *ap/*[Npkt]]*/)
 	return 0;
 }
 
-void
+int
 Pcallfmt(Fmt *f)
 {
-	Pcall *c = va_arg(f->arg, Pcall*);
+	Pcall *c = va_arg(f->args, Pcall*);
 
 	switch(c->type){
 	default: 
@@ -283,7 +283,7 @@ Pcallfmt(Fmt *f)
 	{
 		Mstatus *s = &c->status;
 
-		return fmtprint(f,  "Rstatus  %4d/%d/%d %d:%2d basal %uF insulin %dU temp %d %d/%d",
+		return fmtprint(f,  "Rstatus  %4d/%d/%d %d:%2d basal %.3uF insulin %dU temp %d %d/%d",
 			s->year, s->month, s->day, s->hour, s->minute,
 			s->basal, s->insulin, s->temp, s->temptime, s->temptotal);
 	}
@@ -291,7 +291,7 @@ Pcallfmt(Fmt *f)
 	case Rstatus1:
 	{
 		Mstatus1 *s = &c->status1;
-		return fmtprint(f, "Rstatus1 %d-%s insulin %dU, daily %uFU hourly %uFU",
+		return fmtprint(f, "Rstatus1 %d-%s insulin %dU, daily %.3uFU hourly %.3uFU",
 			s->prognum, s->progname, s->insulin, s->daily, s->hourly);
 	}
 
@@ -299,7 +299,7 @@ Pcallfmt(Fmt *f)
 	case Rstatus2:
 	{
 		Mstatus2 *s = &c->status2;
-		return fmtprint(f, "Rstatus2 bolus %d.%3d %4d/%d/%d %2d:%2d iob %uF",
+		return fmtprint(f, "Rstatus2 bolus %d.%3d %4d/%d/%d %2d:%2d iob %.3uF",
 			s->bolus/1000, s->bolus%1000,
 			s->year, s->month, s->day,
 			s->hour, s->minute, s->iob);
@@ -308,7 +308,7 @@ Pcallfmt(Fmt *f)
 	case Rstatus3:
 	{
 		Mstatus3 *s = &c->status3;
-		return fmtprint(f, "Rstatus3 bolus %F basal %uF temp=%d suspend=%d",
+		return fmtprint(f, "Rstatus3 bolus %.3uF basal %.3uF temp=%d suspend=%d",
 			s->bolus, s->basal, s->temp, s->suspend);
 	}
 

@@ -1,5 +1,5 @@
 #include <u.h>
-#include <lib.h>
+#include <libc.h>
 #include "rcall.h"
 
 #ifdef CC1110
@@ -10,12 +10,16 @@ static char* strmsgtype[] = {
 	"Nop", "Trx", "Rrx", "Ttx", "Rtx", "Ttxrx", "Rtxrx", "Tping", "Rping"
 };
 
-void
+int
 rcallfmt(Fmt *f)
 {
-	Rcall *c = va_arg(f->arg, Rcall*);
-
-	if(c->type >= Rerr){
+	Rcall *c = va_arg(f->args, Rcall*);
+	
+	if(c->type == Treset)
+		fmtprint(f, "Treset ");
+	else if(c->type == Rreset)
+		fmtprint(f, "Rreset ");
+	else if(c->type >= Rerr){
 		fmtprint(f, "Rerr ");
 		switch(c->err){
 		case Emissing:		fmtprint(f, "missing"); break;
@@ -32,4 +36,6 @@ rcallfmt(Fmt *f)
 		fmtprint(f, " timeout %dms", c->timeoutms);
 	if(c->type == Ttx || c->type == Ttxrx)
 		fmtprint(f, " preamble %dms", c->preamblems);
+	
+	return 0;
 }

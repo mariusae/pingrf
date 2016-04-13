@@ -33,12 +33,22 @@ srvinit()
 
 	// Baudrate = 57.6 kbps (U0BAUD.BAUD_M = 34, U0GCR.BAUD_E = 11)
 	// Baudrate = 19.2 kbps (U0BAUD.BAUD_M = 131, U0GCR.BAUD_E = 9)
+
+	// 26mhz:
 	U0BAUD = 131;
 	U0GCR = (U0GCR&~U0GCR_BAUD_E) | 9;
+
+	// 24mhz:
+/*
+	U0BAUD = 163;
+	U0GCR = (U0GCR&~U0GCR_BAUD_E) | 9;
+*/
 
 	// Enable flow control.
 	U0UCR |= U0UCR_FLOW;
 	U0UCR |= U0UCR_FLUSH;
+	// XXX
+	U0UCR |= 0x02;
 
 	rxstate = Uidle;
 
@@ -54,7 +64,7 @@ srvrx()
 	flag &= ~Frxcall;
 	rxstate = Uready;
 	nrx = 0;
-
+	
 //	URX0IF = 0;
 //	U0CSR &= ~U0CSR_RX_BYTE;
 //	U0CSR |= U0CSR_RE;

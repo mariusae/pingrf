@@ -1,16 +1,11 @@
 #include <u.h>
-#include <lib.h>
+#include <libc.h>
 #include "rcall.h"
-
-int (*_rcallimpl)(Rcall*, Rcall*) = nil;
 
 int
 rcall(Rcall *tx, Rcall *rx)
 {
 	static uint8 buf[RCALLMAX];
-	
-	if(_rcallimpl != nil)
-		return _rcallimpl(tx, rx);
 
 	if(tx->type == Treset){
 		rx->type = Rreset;

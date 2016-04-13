@@ -45,30 +45,28 @@ main(void)
 
 	memset(&curcall, 0, sizeof curcall);
 
-  	// Enable the 26MHz clock
 	SLEEP &= ~SLEEP_OSC_PD;
 	await(SLEEP & SLEEP_XOSC_S);
+	
 	CLKCON = (CLKCON & ~(CLKCON_CLKSPD | CLKCON_OSC)) | CLKSPD_DIV_1;
 	await(!(CLKCON & CLKCON_OSC));
 
 	SLEEP |= SLEEP_OSC_PD;
 	await(SLEEP & SLEEP_XOSC_S);
 
-	// Configure P1.0, P1.1 to output. (LEDs)
-	P1DIR |= BIT(0) | BIT(1);
+	P1DIR |= LEDBITS;
 
 	printinit();
 	srvinit();
 	rfinit();
 
- 	GREEN = 0;
- 	RED = 0;
+	GREEN = RED = 0;
  	
 	// Enables interrupts. (Go go go)
 	EA = 1;
 
 	dprint("pingrf started.\n");
-	
+
 	srvrx();
 	for(;;){
 		if(flag&Fpanic){
@@ -78,6 +76,7 @@ main(void)
 			for(;;){
 				RED ^= 1;
 				sleep(1000);
+				/* TODO: reset */
 			}
 		}
 		
@@ -105,6 +104,7 @@ main(void)
 				flag &= ~Ftxcall;
 				state = Idle;
 			}
+//			GREEN=1;
 			break;
 
 		default:

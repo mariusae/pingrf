@@ -1,6 +1,17 @@
-#include <stdarg.h>
-#include <string.h>
 #include <stdint.h>
+#include <inttypes.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <fcntl.h>
+#include <assert.h>
+#include <setjmp.h>
+#include <stddef.h>
+#include <math.h>
+#include <ctype.h>
+#include <signal.h>
+
 
 #define	USED(x)	if(x){}else{}
 
@@ -35,3 +46,7 @@ typedef 	int64_t int64;
 #define XDATA 
 
 #define 	nil	((void*)0)
+
+#ifndef O_DIRECT
+#define O_DIRECT 0
+#endif

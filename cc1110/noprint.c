@@ -16,10 +16,5 @@ putchar(char c)
 void
 panic(char *fmt, ...)
 {
-	va_list arg;
-	
-	va_start(arg, fmt);
-	va_end(arg);
-	
 	abort();
 }

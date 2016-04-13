@@ -1,8 +1,7 @@
 #include <u.h>
-#include <lib.h>
-#include "rcall.h"
+#include <libc.h>
+#include <rcall.h>
 
-#include <stdlib.h>
 #include <assert.h>
 
 static uint8 testpkt[] = {
@@ -61,7 +60,7 @@ convR2M2R(Rcall *r, uint8 size)
 }
 
 int
-radiorpc(uint8 *buf)
+rcall(Rcall *tx, Rcall *rx)
 {
 	werrstr("not implemented");
 	return -1;

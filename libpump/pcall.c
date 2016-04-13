@@ -5,6 +5,7 @@ static uint8 tagseq[] = {
 	0x24, 0xdc, 0x36, 0xc0, 0x4e,
 	0xb6
 };
+
 static uint8 tagseqidx = 0;
 
 
@@ -17,9 +18,12 @@ pcall(Pcall *tx, Pcall *rx)
 	if(_presume() < 0)
 		return -1;
 
-	if(_pcall(tx, rx) != 1)
-		return -1;
-	
+	switch(_pcall(tx, rx)){
+	case 1:	break;
+	case 0:	werrstr("timeout");
+	default:	return -1;
+	}
+
 	_padjourn();
 
 	return 0;
@@ -44,7 +48,7 @@ _pcall(Pcall *tx, Pcall *rx)
 	case Twakeup:
 		preamblems = 2000;
 		timeoutms = 200;
-		tries = 5;
+		tries = 10;
 		break;
 
 	case Tadjourn:
@@ -55,7 +59,7 @@ _pcall(Pcall *tx, Pcall *rx)
 	default:
 		preamblems = 0;
 		timeoutms = 500;
-		tries = 3;
+		tries = 10;
 		break;
 	}
 

@@ -1,7 +1,7 @@
 #include <u.h>
-#include <lib.h>
+#include <libc.h>
 #include <table.h>
-#include <libradio/rcall.h>
+#include <rcall.h>
 #include "pcall.h"
 #include "pump.h"
 

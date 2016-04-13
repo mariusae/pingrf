@@ -1,5 +1,4 @@
 #include <u.h>
-#include <lib.h>
 
 /* TODO: this needs to be robust to malformed messages. */
 

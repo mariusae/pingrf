@@ -1,13 +1,20 @@
-
 #include "impl.h"
+#include <sys/utsname.h>
+
+enum
+{
+	Resetserial,
+	Resetgpio
+};
 
 char *argv0;
 
 /* char *ttypath = "/dev/tty.usbserial"; */
-char *ttypath = "/dev/cu.usbserial-AH03IMYO";
-speed_t ttybaud = 19200;
-int tty;
-int debug = 0;
+/* char *ttypath = "/dev/cu.usbserial-AH03IMYO"; */
+char *ttypath = nil;
+speed_t ttybaud = B19200;
+
+int reset;
 
 void usage();
 void opentty();
@@ -19,8 +26,6 @@ int	rcallimpl(Rcall *tx, Rcall *rx);
 
 static void chklearn();
 static void	ping();
-
-extern int (*_rcallimpl)(Rcall*, Rcall*);
 
 uint32	crc32(void*, uint);
 
@@ -48,12 +53,12 @@ main(int argc, char **argv)
 	uint n;
 	float insulin, hours;
 	uint dox = 0;
-	
-	_rcallimpl = &rcallimpl;
+	struct utsname name;
 
+	fixfmtinstall();
 	fmtinstall('P', Pcallfmt);
 	fmtinstall('R', rcallfmt);
-
+	
 	ARGBEGIN{
 	case 't':
 		ttypath = EARGF(usage()); 
@@ -74,7 +79,26 @@ main(int argc, char **argv)
 	if(argc == 0)
 		usage();
 
+	if(ttypath != nil){
+	}else if(uname(&name) < 0){
+		panic("unknown system, cannot determine radio settings");
+	}else if(strcmp(name.sysname, "Darwin") == 0){
+		dprint("Darwin, using usbserial\n");
+		ttypath = "/dev/cu.usbserial-AH03IMYO";
+	}else if(strcmp(name.sysname, "Linux") == 0){
+		dprint("Linux, using UART\n");
+		ttypath = "/dev/ttyAMA0";
+	}else
+		panic("No TTY found; pass -t");
+
 	opentty();
+	if(rpigpioinit() < 0){
+		dprint("using serial reset\n");
+		reset = Resetserial;
+	}else{
+		dprint("using GPIO reset\n");
+		reset = Resetgpio;
+	}
 	radioreset();
 
 	if(dox) pxxx();
@@ -107,14 +131,14 @@ main(int argc, char **argv)
 		print("%4d/%2d/%2d %2d:%2d\n", 
 			ps.year, ps.month, ps.day, ps.hour, ps.minute);
 		print("	Insulin remaining: %d\n", ps.insulinleft);
-		print("	IOB: %uF\n", ps.iob);
-		print("	Basal: %uF\n", ps.basal);
+		print("	IOB: %.3uF\n", ps.iob);
+		print("	Basal: %.3uF\n", ps.basal);
 		print("	Temp: %d %d/%d\n", ps.temp, ps.temptime, ps.temptotal);
-		print("	Daily basal delivery: %uF\n", ps.dailybasal);
-		print("	Daily bolus delivery: %uF\n", ps.dailybolus);
-		print("	Last bolus: %uF\n", ps.lastbolus);
+		print("	Daily basal delivery: %.3uF\n", ps.dailybasal);
+		print("	Daily bolus delivery: %.3uF\n", ps.dailybolus);
+		print("	Last bolus: %.3uF\n", ps.lastbolus);
 		if(ps.comboactive){
-			print("	Combo active %2d:%2d-%2d:%2d %uF/%uF\n", 
+			print("	Combo active %2d:%2d-%2d:%2d %.3uF/%.3uF\n", 
 				ps.combostarthour, ps.combostartminute,
 				ps.comboendhour, ps.comboendminute,
 				ps.combodelivered, ps.combototal);
@@ -186,59 +210,32 @@ usage()
 void
 opentty()
 {
-	struct termios ts;
-	int opts;
-
-	// We open the tty in nonblocking mode,
-	// but then later re-enable it. This seems 
-	// to be the only way to actually open the 
-	// tty on OSX.
-	tty = open(ttypath, O_RDWR|O_NOCTTY|O_NDELAY);
+	tty = open(ttypath, O_RDWR|O_NOCTTY|O_SYNC);
 	if(tty < 0)
 		panic("%s: %r", ttypath);
-
-	if(fcntl(tty, F_SETFL, 0) < 0)
-		panic("fcntl: %r");
-
-	if(tcgetattr(tty, &ts) < 0)
-		panic("tcgetattr: %r");
-
-	cfsetspeed(&ts, ttybaud);
-	cfmakeraw(&ts);
-
-	ts.c_cc[VMIN]  = 1;
-	ts.c_cc[VTIME] = 0;
-
-	ts.c_cflag |= CS8|CLOCAL|CREAD|B19200;
-	ts.c_iflag &= ~(BRKINT|ICRNL|INPCK|ISTRIP|IXON);
-	ts.c_oflag &= ~OPOST;
-	ts.c_cflag &= ~(CSIZE|PARENB);
-	ts.c_lflag &= ~(ECHO|ICANON|IEXTEN|ISIG);
-
-/*
-	attr.Iflag &^= syscall.BRKINT | syscall.ICRNL | syscall.INPCK | syscall.ISTRIP | syscall.IXON
-	attr.Oflag &^= syscall.OPOST
-	attr.Cflag &^= syscall.CSIZE | syscall.PARENB
-	attr.Cflag |= syscall.CS8
-	attr.Lflag &^= syscall.ECHO | syscall.ICANON | syscall.IEXTEN | syscall.ISIG
-	attr.Cc[syscall.VMIN] = 1
-	attr.Cc[syscall.VTIME] = 0
-*/
-
-	ts.c_cc[VMIN]  = 1;
-	ts.c_cc[VTIME] = 0;
-
-	if(tcsetattr(tty, TCSAFLUSH, &ts) < 0)
-		panic("tcsetattr: %r");
+	
+	if(ttysetattr(tty, ttybaud, 0) < 0)
+		panic("%s: %r", ttypath);
+	if(ttysetblocking(tty, 1) < 0)
+		panic("%s: %r", ttypath);
 }
 
 int
-rcallimpl(Rcall *tx, Rcall *rx)
+rcall(Rcall *tx, Rcall *rx)
 {
-	uint8 buf[RCALLMAX];
-
+	static uint8 buf[RCALLMAX];
+	
 	dprint("tx %R\n", tx);
 	dprinthex(tx->pkt, 8+tx->pkt[3]);
+	
+//	fprint(2, "tx %R\n", tx);
+//	print("tx %R\n", tx);
+//	printhex(tx->pkt, 8+tx->pkt[3]);
+
+	if(tx->type == Treset){
+		rx->type = Rreset;
+		return radioreset();
+	}
 
 	if(convR2M(tx, buf, sizeof buf) == 0)
 		return -1;
@@ -283,7 +280,7 @@ int
 rcallwrite(void *p, uint n)
 {
 	int nw, tmp;
-
+	
 	if((nw = write(tty, p, n)) < 0){
 		return -1;
 	}else if(nw != n){
@@ -333,23 +330,22 @@ call(int type)
 }
 
 int
-radiorpc(uint8 *buf)
-{
-	werrstr("not implemented");
-	return -1;
-}
-
-int
 radioreset()
 {
 	static uint8 ff = 0xff;
-	
-	if(write(tty, &ff, 1) < 0)
-		return -1;
-	
-	usleep(250*1000);
 
-	return 0;
+	switch(reset){
+	case Resetserial:
+		if(write(tty, &ff, 1) < 0)
+			return -1;
+		usleep(250*1000);
+		return 0;
+
+	case Resetgpio:
+		return rpigpioradioreset();
+	}
+
+	return -1;
 }
 
 static void
@@ -378,7 +374,7 @@ static void
 ping()
 {
 	Rcall tx, rx;
-	
+
 	tx.type = Tping;
 	if(rcall(&tx, &rx) < 0)
 		panic("rcall: %r");

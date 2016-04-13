@@ -26,83 +26,63 @@ static volatile uint16 nwakeup;
 void
 rfinit()
 {
-#if 0
-
-	SYNC1 = 0xd3;
-	SYNC0 = 0x91;
-	PKTLEN = 0x4e;
-	PKTCTRL1 = 0x40;
-	PKTCTRL0 = 0x00;
-	ADDR = 0x00;
-	CHANNR = 0x00;
-	FSCTRL1 = 0x0c;
-	FSCTRL0 = 0x00;
-	FREQ2 = 0x23;
-	FREQ1 = 0x27;
-	FREQ0 = 0x2d;
-	MDMCFG4 = 0xc9;
-	MDMCFG3 = 0x83;
-	MDMCFG2 = 0x01;
-	MDMCFG1 = 0x73;
-	MDMCFG0 = 0x11;
-	DEVIATN = 0x37;
-	MCSM2 = 0x07;
-	MCSM1 = 0x30;  //  0x3f: continues RX after TX, RX.
-	MCSM0 = 0x18;
-	FOCCFG = 0x17;
-	BSCFG = 0x6c;
-	FREND1 = 0xb6;
-	FREND0 = 0x10;
-	FSCAL3 = 0xef;
-	FSCAL2 = 0x2b;
-	FSCAL1 = 0x0b;
-	FSCAL0 = 0x1f;
-	TEST1 = 0x31;
-	TEST0 = 0x09;
-	PA_TABLE0 = 0xc0;
-	PA_TABLE1 = 0x00;
-#endif
-
-#if 1
 	SYNC1 = 0xd3;
 	SYNC0 = 0x91;
 	PKTCTRL1 = 0xC0; // Packet Automation Control 
 	PKTCTRL0 = 0x02; // Packet Automation Control 
 	FSCTRL1 = 0x06; // Frequency Synthesizer Control 
 	FSCTRL0 = 0x00;
+	
+#if MHZ == 24
+	FREQ2 = 0x25; // Frequency Control Word, High Byte 
+	FREQ1 = 0xA0; // Frequency Control Word, Middle Byte 
+	FREQ0 = 0x36; // Frequency Control Word, Low Byte 
+
+	MDMCFG4 = 0xB9; // Modem configuration 
+	MDMCFG3 = 0xA3; // Modem Configuration 
+	MDMCFG2 = 0x01; // Modem Configuration 
+	MDMCFG1 = 0x23; // Modem Configuration 
+	MDMCFG0 = 0xA0; // Modem Configuration 
+
+	DEVIATN = 0x33; // Modem Deviation Setting 
+#elif MHZ == 26
 	FREQ2 = 0x22; // Frequency Control Word, High Byte 
 	FREQ1 = 0xBB; // Frequency Control Word, Middle Byte 
 	FREQ0 = 0x46; // Frequency Control Word, Low Byte
-	
 
 	MDMCFG4 = 0xC9; // Modem configuration 
 	MDMCFG3 = 0x83; // Modem Configuration 
 	MDMCFG2 = 0x01; // Modem Configuration 
 	MDMCFG1 = 0x23; // Modem Configuration 
 	MDMCFG0 = 0x80; // Modem Configuration 
+
 	DEVIATN = 0x32; // Modem Deviation Setting 
-	MCSM2 = 0x0F; // Main Radio Control State Machine Configuration 
-	MCSM1 = 0x0F; // Main Radio Control State Machine Configuration 
-	MCSM0 = 0x38; // Main Radio Control State Machine Configuration 
+
+#else
+#error	No modem configuration for the configured clock speed.
+#endif
+
+
+	MCSM2 = 0x07;
+	MCSM1 = 0x30;  //  0x3f: continues RX after TX, RX.
+	MCSM0 = 0x18;
+
 	FOCCFG = 0x16; // Frequency Offset Compensation Configuration 
+
 	FSCAL3 = 0xE9; // Frequency Synthesizer Calibration 
 	FSCAL2 = 0x2A; // Frequency Synthesizer Calibration 
 	FSCAL1 = 0x00; // Frequency Synthesizer Calibration 
 	FSCAL0 = 0x1F; // Frequency Synthesizer Calibration 
+
 	TEST1 = 0x31; // Various Test Settings 
 	TEST0 = 0x09; // Various Test Settings 
+
 	PA_TABLE0 = 0xc0; // PA Power Setting 0 
 	PA_TABLE1 = 0x00; // PA Power Setting 0 
 
 	PKTLEN = Npkt;
 	PKTCTRL0 = (PKTCTRL0&~0x3) | 0; // 0: fixed, 1: var, 2: infinite
 	CHANNR = 36;
-
-	MCSM2 = 0x07;
-	MCSM1 = 0x30;  //  0x3f: continues RX after TX, RX.
-	MCSM0 = 0x18;
-#endif
-
 
 //	RFIM |= RFIF_IRQ_DONE;
 	RFIM |= RFIF_IRQ_TXUNF;

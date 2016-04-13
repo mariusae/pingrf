@@ -1,6 +1,6 @@
 #include <u.h>
-#include <lib.h>
-#include "pcall.h"
+#include <libc.h>
+#include <pcall.h>
 
 #include <stdlib.h>
 #include <assert.h>
@@ -43,7 +43,7 @@ main(int argc, char **argv)
 }
 
 int
-radiorpc(uint8 *buf)
+rcall(Rcall *tx, Rcall *rx)
 {
 	werrstr("not implemented");
 	return -1;

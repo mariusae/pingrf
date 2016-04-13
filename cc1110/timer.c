@@ -1,10 +1,6 @@
 #include "a.h"
 
-enum
-{
-	Hz = 101563, // 26e6/128/2
-	Khz = 102 	// 26e3/128/2
-};
+#define  TICKSPERSECOND ((MHZ*1e6)/128/2)
 
 static uint32 ticks;
 
@@ -37,14 +33,14 @@ alarm(uint16 ms)
 	T1CTL = 0;
 	T1CNTL =  0;
 
-	ticks = ((uint32)ms*Hz)/1000;
+	ticks = ((uint32)ms*TICKSPERSECOND)/1000;
 
 	if(ticks>>16){
 		T1CC0H = 0xff;
 		T1CC0L = 0xff;
 	}else{
 		T1CC0H = ticks >> 8;
-		T1CC0H = ticks & 0xff;
+		T1CC0L = ticks & 0xff;
 	}
 
 	T1CCTL0 = 0x44;

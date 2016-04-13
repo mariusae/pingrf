@@ -1,5 +1,5 @@
 #include <u.h>
-#include <lib.h>
+#include <libc.h>
 
 #include <stdlib.h>
 #include <stdarg.h>
@@ -11,20 +11,22 @@
 #include <errno.h>
 #include <termios.h>
 
-#include <libradio/rcall.h>
-#include <libpump/pcall.h>
-#include <libpump/pump.h>
+#include <rcall.h>
+#include <pcall.h>
+#include <pump.h>
 #include "arg.h"
+
+/* The tty file descriptor. */
+int tty;
 
 void*	emalloc(uint n);
 char*	estrdup(char *s);
 int		readn(int fd, void *buf, uint n);
 int		unhexlify(char *h, void* buf, uint *n);
+void		printhex(uint8 *buf, uint n);
 
-extern int debug;
+int	rpigpioinit();
+int	rpigpioradioreset();
 
-#undef dprint
-#undef dprinthex
-
-#define dprint(...)	if(debug)fprint(2, __VA_ARGS__)
-#define dprinthex(p, n)	if(debug)printhex(p, n)
+int	ttysetblocking(int, int);
+int	ttysetattr(int, int, int);

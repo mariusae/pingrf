@@ -1,5 +1,5 @@
 #include <u.h>
-#include <lib.h>
+#include <libc.h>
 #include "rcall.h"
 
 uint

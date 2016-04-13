@@ -1,0 +1,1344 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ANSI-C Compiler
+                                      3 ; Version 3.4.0 #8981 (May  7 2015) (Mac OS X x86_64)
+                                      4 ; This file was generated Fri Mar 18 14:33:05 2016
+                                      5 ;--------------------------------------------------------
+                                      6 	.module conv
+                                      7 	.optsdcc -mmcs51 --model-large
+                                      8 	
+                                      9 ;--------------------------------------------------------
+                                     10 ; Public variables in this module
+                                     11 ;--------------------------------------------------------
+                                     12 	.globl _memcpy
+                                     13 	.globl _convR2M_PARM_3
+                                     14 	.globl _convR2M_PARM_2
+                                     15 	.globl _convM2R_PARM_3
+                                     16 	.globl _convM2R_PARM_2
+                                     17 	.globl _convM2R
+                                     18 	.globl _convR2M
+                                     19 ;--------------------------------------------------------
+                                     20 ; special function registers
+                                     21 ;--------------------------------------------------------
+                                     22 	.area RSEG    (ABS,DATA)
+      000000                         23 	.org 0x0000
+                                     24 ;--------------------------------------------------------
+                                     25 ; special function bits
+                                     26 ;--------------------------------------------------------
+                                     27 	.area RSEG    (ABS,DATA)
+      000000                         28 	.org 0x0000
+                                     29 ;--------------------------------------------------------
+                                     30 ; overlayable register banks
+                                     31 ;--------------------------------------------------------
+                                     32 	.area REG_BANK_0	(REL,OVR,DATA)
+      000000                         33 	.ds 8
+                                     34 ;--------------------------------------------------------
+                                     35 ; internal ram data
+                                     36 ;--------------------------------------------------------
+                                     37 	.area DSEG    (DATA)
+      000000                         38 _convM2R_sloc0_1_0:
+      000000                         39 	.ds 3
+      000003                         40 _convM2R_sloc1_1_0:
+      000003                         41 	.ds 2
+      000005                         42 _convM2R_sloc2_1_0:
+      000005                         43 	.ds 3
+      000008                         44 _convR2M_sloc0_1_0:
+      000008                         45 	.ds 3
+      00000B                         46 _convR2M_sloc1_1_0:
+      00000B                         47 	.ds 3
+      00000E                         48 _convR2M_sloc2_1_0:
+      00000E                         49 	.ds 1
+      00000F                         50 _convR2M_sloc3_1_0:
+      00000F                         51 	.ds 3
+      000012                         52 _convR2M_sloc4_1_0:
+      000012                         53 	.ds 3
+                                     54 ;--------------------------------------------------------
+                                     55 ; overlayable items in internal ram 
+                                     56 ;--------------------------------------------------------
+                                     57 ;--------------------------------------------------------
+                                     58 ; indirectly addressable internal ram data
+                                     59 ;--------------------------------------------------------
+                                     60 	.area ISEG    (DATA)
+                                     61 ;--------------------------------------------------------
+                                     62 ; absolute internal ram data
+                                     63 ;--------------------------------------------------------
+                                     64 	.area IABS    (ABS,DATA)
+                                     65 	.area IABS    (ABS,DATA)
+                                     66 ;--------------------------------------------------------
+                                     67 ; bit data
+                                     68 ;--------------------------------------------------------
+                                     69 	.area BSEG    (BIT)
+                                     70 ;--------------------------------------------------------
+                                     71 ; paged external ram data
+                                     72 ;--------------------------------------------------------
+                                     73 	.area PSEG    (PAG,XDATA)
+                                     74 ;--------------------------------------------------------
+                                     75 ; external ram data
+                                     76 ;--------------------------------------------------------
+                                     77 	.area XSEG    (XDATA)
+      000000                         78 _convM2R_PARM_2:
+      000000                         79 	.ds 1
+      000001                         80 _convM2R_PARM_3:
+      000001                         81 	.ds 3
+      000004                         82 _convM2R_p_1_113:
+      000004                         83 	.ds 3
+      000007                         84 _convM2R_size_1_114:
+      000007                         85 	.ds 1
+      000008                         86 _convR2M_PARM_2:
+      000008                         87 	.ds 3
+      00000B                         88 _convR2M_PARM_3:
+      00000B                         89 	.ds 1
+      00000C                         90 _convR2M_r_1_116:
+      00000C                         91 	.ds 3
+      00000F                         92 _convR2M_p_1_117:
+      00000F                         93 	.ds 3
+      000012                         94 _convR2M_size_1_117:
+      000012                         95 	.ds 1
+                                     96 ;--------------------------------------------------------
+                                     97 ; absolute external ram data
+                                     98 ;--------------------------------------------------------
+                                     99 	.area XABS    (ABS,XDATA)
+                                    100 ;--------------------------------------------------------
+                                    101 ; external initialized ram data
+                                    102 ;--------------------------------------------------------
+                                    103 	.area XISEG   (XDATA)
+                                    104 	.area HOME    (CODE)
+                                    105 	.area GSINIT0 (CODE)
+                                    106 	.area GSINIT1 (CODE)
+                                    107 	.area GSINIT2 (CODE)
+                                    108 	.area GSINIT3 (CODE)
+                                    109 	.area GSINIT4 (CODE)
+                                    110 	.area GSINIT5 (CODE)
+                                    111 	.area GSINIT  (CODE)
+                                    112 	.area GSFINAL (CODE)
+                                    113 	.area CSEG    (CODE)
+                                    114 ;--------------------------------------------------------
+                                    115 ; global & static initialisations
+                                    116 ;--------------------------------------------------------
+                                    117 	.area HOME    (CODE)
+                                    118 	.area GSINIT  (CODE)
+                                    119 	.area GSFINAL (CODE)
+                                    120 	.area GSINIT  (CODE)
+                                    121 ;--------------------------------------------------------
+                                    122 ; Home
+                                    123 ;--------------------------------------------------------
+                                    124 	.area HOME    (CODE)
+                                    125 	.area HOME    (CODE)
+                                    126 ;--------------------------------------------------------
+                                    127 ; code
+                                    128 ;--------------------------------------------------------
+                                    129 	.area CSEG    (CODE)
+                                    130 ;------------------------------------------------------------
+                                    131 ;Allocation info for local variables in function 'convM2R'
+                                    132 ;------------------------------------------------------------
+                                    133 ;sloc0                     Allocated with name '_convM2R_sloc0_1_0'
+                                    134 ;sloc1                     Allocated with name '_convM2R_sloc1_1_0'
+                                    135 ;sloc2                     Allocated with name '_convM2R_sloc2_1_0'
+                                    136 ;n                         Allocated with name '_convM2R_PARM_2'
+                                    137 ;r                         Allocated with name '_convM2R_PARM_3'
+                                    138 ;p                         Allocated with name '_convM2R_p_1_113'
+                                    139 ;size                      Allocated with name '_convM2R_size_1_114'
+                                    140 ;------------------------------------------------------------
+                                    141 ;	../libradio/conv.c:6: convM2R(uint8 *p, uint8 n, Rcall *r)
+                                    142 ;	-----------------------------------------
+                                    143 ;	 function convM2R
+                                    144 ;	-----------------------------------------
+      000000                        145 _convM2R:
+                           000007   146 	ar7 = 0x07
+                           000006   147 	ar6 = 0x06
+                           000005   148 	ar5 = 0x05
+                           000004   149 	ar4 = 0x04
+                           000003   150 	ar3 = 0x03
+                           000002   151 	ar2 = 0x02
+                           000001   152 	ar1 = 0x01
+                           000000   153 	ar0 = 0x00
+      000000 AF F0            [24]  154 	mov	r7,b
+      000002 AE 83            [24]  155 	mov	r6,dph
+      000004 E5 82            [12]  156 	mov	a,dpl
+      000006 90r00r04         [24]  157 	mov	dptr,#_convM2R_p_1_113
+      000009 F0               [24]  158 	movx	@dptr,a
+      00000A EE               [12]  159 	mov	a,r6
+      00000B A3               [24]  160 	inc	dptr
+      00000C F0               [24]  161 	movx	@dptr,a
+      00000D EF               [12]  162 	mov	a,r7
+      00000E A3               [24]  163 	inc	dptr
+      00000F F0               [24]  164 	movx	@dptr,a
+                                    165 ;	../libradio/conv.c:10: if(n == 0) return 0;
+      000010 90r00r00         [24]  166 	mov	dptr,#_convM2R_PARM_2
+      000013 E0               [24]  167 	movx	a,@dptr
+      000014 FF               [12]  168 	mov	r7,a
+      000015 70 04            [24]  169 	jnz	00102$
+      000017 90 00 00         [24]  170 	mov	dptr,#0x0000
+      00001A 22               [24]  171 	ret
+      00001B                        172 00102$:
+                                    173 ;	../libradio/conv.c:11: size = U8GET(p);
+      00001B 90r00r04         [24]  174 	mov	dptr,#_convM2R_p_1_113
+      00001E E0               [24]  175 	movx	a,@dptr
+      00001F FC               [12]  176 	mov	r4,a
+      000020 A3               [24]  177 	inc	dptr
+      000021 E0               [24]  178 	movx	a,@dptr
+      000022 FD               [12]  179 	mov	r5,a
+      000023 A3               [24]  180 	inc	dptr
+      000024 E0               [24]  181 	movx	a,@dptr
+      000025 FE               [12]  182 	mov	r6,a
+      000026 8C 82            [24]  183 	mov	dpl,r4
+      000028 8D 83            [24]  184 	mov	dph,r5
+      00002A 8E F0            [24]  185 	mov	b,r6
+      00002C 12r00r00         [24]  186 	lcall	__gptrget
+      00002F FB               [12]  187 	mov	r3,a
+      000030 90r00r07         [24]  188 	mov	dptr,#_convM2R_size_1_114
+      000033 F0               [24]  189 	movx	@dptr,a
+                                    190 ;	../libradio/conv.c:12: p += 1;
+      000034 90r00r04         [24]  191 	mov	dptr,#_convM2R_p_1_113
+      000037 74 01            [12]  192 	mov	a,#0x01
+      000039 2C               [12]  193 	add	a,r4
+      00003A F0               [24]  194 	movx	@dptr,a
+      00003B E4               [12]  195 	clr	a
+      00003C 3D               [12]  196 	addc	a,r5
+      00003D A3               [24]  197 	inc	dptr
+      00003E F0               [24]  198 	movx	@dptr,a
+      00003F EE               [12]  199 	mov	a,r6
+      000040 A3               [24]  200 	inc	dptr
+      000041 F0               [24]  201 	movx	@dptr,a
+                                    202 ;	../libradio/conv.c:14: if(n < size)
+      000042 90r00r07         [24]  203 	mov	dptr,#_convM2R_size_1_114
+      000045 E0               [24]  204 	movx	a,@dptr
+      000046 FE               [12]  205 	mov	r6,a
+      000047 C3               [12]  206 	clr	c
+      000048 EF               [12]  207 	mov	a,r7
+      000049 9E               [12]  208 	subb	a,r6
+      00004A 50 04            [24]  209 	jnc	00104$
+                                    210 ;	../libradio/conv.c:15: return 0;
+      00004C 90 00 00         [24]  211 	mov	dptr,#0x0000
+      00004F 22               [24]  212 	ret
+      000050                        213 00104$:
+                                    214 ;	../libradio/conv.c:17: r->type = U8GET(p);
+      000050 C0 06            [24]  215 	push	ar6
+      000052 90r00r01         [24]  216 	mov	dptr,#_convM2R_PARM_3
+      000055 E0               [24]  217 	movx	a,@dptr
+      000056 FC               [12]  218 	mov	r4,a
+      000057 A3               [24]  219 	inc	dptr
+      000058 E0               [24]  220 	movx	a,@dptr
+      000059 FD               [12]  221 	mov	r5,a
+      00005A A3               [24]  222 	inc	dptr
+      00005B E0               [24]  223 	movx	a,@dptr
+      00005C FF               [12]  224 	mov	r7,a
+      00005D 90r00r04         [24]  225 	mov	dptr,#_convM2R_p_1_113
+      000060 E0               [24]  226 	movx	a,@dptr
+      000061 F9               [12]  227 	mov	r1,a
+      000062 A3               [24]  228 	inc	dptr
+      000063 E0               [24]  229 	movx	a,@dptr
+      000064 FA               [12]  230 	mov	r2,a
+      000065 A3               [24]  231 	inc	dptr
+      000066 E0               [24]  232 	movx	a,@dptr
+      000067 FB               [12]  233 	mov	r3,a
+      000068 89 82            [24]  234 	mov	dpl,r1
+      00006A 8A 83            [24]  235 	mov	dph,r2
+      00006C 8B F0            [24]  236 	mov	b,r3
+      00006E 12r00r00         [24]  237 	lcall	__gptrget
+      000071 F8               [12]  238 	mov	r0,a
+      000072 8C 82            [24]  239 	mov	dpl,r4
+      000074 8D 83            [24]  240 	mov	dph,r5
+      000076 8F F0            [24]  241 	mov	b,r7
+      000078 12r00r00         [24]  242 	lcall	__gptrput
+                                    243 ;	../libradio/conv.c:18: p+= 1;
+      00007B 90r00r04         [24]  244 	mov	dptr,#_convM2R_p_1_113
+      00007E 74 01            [12]  245 	mov	a,#0x01
+      000080 29               [12]  246 	add	a,r1
+      000081 F0               [24]  247 	movx	@dptr,a
+      000082 E4               [12]  248 	clr	a
+      000083 3A               [12]  249 	addc	a,r2
+      000084 A3               [24]  250 	inc	dptr
+      000085 F0               [24]  251 	movx	@dptr,a
+      000086 EB               [12]  252 	mov	a,r3
+      000087 A3               [24]  253 	inc	dptr
+      000088 F0               [24]  254 	movx	@dptr,a
+                                    255 ;	../libradio/conv.c:19: r->flag = U8GET(p);
+      000089 74 01            [12]  256 	mov	a,#0x01
+      00008B 2C               [12]  257 	add	a,r4
+      00008C F5*00            [12]  258 	mov	_convM2R_sloc0_1_0,a
+      00008E E4               [12]  259 	clr	a
+      00008F 3D               [12]  260 	addc	a,r5
+      000090 F5*01            [12]  261 	mov	(_convM2R_sloc0_1_0 + 1),a
+      000092 8F*02            [24]  262 	mov	(_convM2R_sloc0_1_0 + 2),r7
+      000094 90r00r04         [24]  263 	mov	dptr,#_convM2R_p_1_113
+      000097 E0               [24]  264 	movx	a,@dptr
+      000098 FA               [12]  265 	mov	r2,a
+      000099 A3               [24]  266 	inc	dptr
+      00009A E0               [24]  267 	movx	a,@dptr
+      00009B FB               [12]  268 	mov	r3,a
+      00009C A3               [24]  269 	inc	dptr
+      00009D E0               [24]  270 	movx	a,@dptr
+      00009E FE               [12]  271 	mov	r6,a
+      00009F 8A 82            [24]  272 	mov	dpl,r2
+      0000A1 8B 83            [24]  273 	mov	dph,r3
+      0000A3 8E F0            [24]  274 	mov	b,r6
+      0000A5 12r00r00         [24]  275 	lcall	__gptrget
+      0000A8 F9               [12]  276 	mov	r1,a
+      0000A9 85*00 82         [24]  277 	mov	dpl,_convM2R_sloc0_1_0
+      0000AC 85*01 83         [24]  278 	mov	dph,(_convM2R_sloc0_1_0 + 1)
+      0000AF 85*02 F0         [24]  279 	mov	b,(_convM2R_sloc0_1_0 + 2)
+      0000B2 12r00r00         [24]  280 	lcall	__gptrput
+                                    281 ;	../libradio/conv.c:20: p += 1;
+      0000B5 90r00r04         [24]  282 	mov	dptr,#_convM2R_p_1_113
+      0000B8 74 01            [12]  283 	mov	a,#0x01
+      0000BA 2A               [12]  284 	add	a,r2
+      0000BB F0               [24]  285 	movx	@dptr,a
+      0000BC E4               [12]  286 	clr	a
+      0000BD 3B               [12]  287 	addc	a,r3
+      0000BE A3               [24]  288 	inc	dptr
+      0000BF F0               [24]  289 	movx	@dptr,a
+      0000C0 EE               [12]  290 	mov	a,r6
+      0000C1 A3               [24]  291 	inc	dptr
+      0000C2 F0               [24]  292 	movx	@dptr,a
+                                    293 ;	../libradio/conv.c:22: switch(r->type){
+      0000C3 8C 82            [24]  294 	mov	dpl,r4
+      0000C5 8D 83            [24]  295 	mov	dph,r5
+      0000C7 8F F0            [24]  296 	mov	b,r7
+      0000C9 12r00r00         [24]  297 	lcall	__gptrget
+      0000CC F5*00            [12]  298 	mov	_convM2R_sloc0_1_0,a
+      0000CE B8 01 04         [24]  299 	cjne	r0,#0x01,00153$
+      0000D1 D0 06            [24]  300 	pop	ar6
+      0000D3 80 46            [24]  301 	sjmp	00109$
+      0000D5                        302 00153$:
+      0000D5 D0 06            [24]  303 	pop	ar6
+      0000D7 74 02            [12]  304 	mov	a,#0x02
+      0000D9 B5*00 03         [24]  305 	cjne	a,_convM2R_sloc0_1_0,00154$
+      0000DC 02r02rE8         [24]  306 	ljmp	00113$
+      0000DF                        307 00154$:
+      0000DF 74 03            [12]  308 	mov	a,#0x03
+      0000E1 B5*00 03         [24]  309 	cjne	a,_convM2R_sloc0_1_0,00155$
+      0000E4 02r02r76         [24]  310 	ljmp	00111$
+      0000E7                        311 00155$:
+      0000E7 74 04            [12]  312 	mov	a,#0x04
+      0000E9 B5*00 03         [24]  313 	cjne	a,_convM2R_sloc0_1_0,00156$
+      0000EC 02r03r75         [24]  314 	ljmp	00115$
+      0000EF                        315 00156$:
+      0000EF 74 05            [12]  316 	mov	a,#0x05
+      0000F1 B5*00 03         [24]  317 	cjne	a,_convM2R_sloc0_1_0,00157$
+      0000F4 02r01rCA         [24]  318 	ljmp	00110$
+      0000F7                        319 00157$:
+      0000F7 74 06            [12]  320 	mov	a,#0x06
+      0000F9 B5*00 03         [24]  321 	cjne	a,_convM2R_sloc0_1_0,00158$
+      0000FC 02r02rE8         [24]  322 	ljmp	00113$
+      0000FF                        323 00158$:
+      0000FF 74 07            [12]  324 	mov	a,#0x07
+      000101 B5*00 03         [24]  325 	cjne	a,_convM2R_sloc0_1_0,00159$
+      000104 02r03r75         [24]  326 	ljmp	00115$
+      000107                        327 00159$:
+      000107 74 08            [12]  328 	mov	a,#0x08
+      000109 B5*00 03         [24]  329 	cjne	a,_convM2R_sloc0_1_0,00160$
+      00010C 02r03r75         [24]  330 	ljmp	00115$
+      00010F                        331 00160$:
+      00010F 74 80            [12]  332 	mov	a,#0x80
+      000111 B5*00 03         [24]  333 	cjne	a,_convM2R_sloc0_1_0,00161$
+      000114 02r03r42         [24]  334 	ljmp	00114$
+      000117                        335 00161$:
+                                    336 ;	../libradio/conv.c:23: default: return 0;
+      000117 90 00 00         [24]  337 	mov	dptr,#0x0000
+      00011A 22               [24]  338 	ret
+                                    339 ;	../libradio/conv.c:30: case Trx:
+      00011B                        340 00109$:
+                                    341 ;	../libradio/conv.c:31: r->timeoutms = U16GET(p);
+      00011B C0 06            [24]  342 	push	ar6
+      00011D 74 03            [12]  343 	mov	a,#0x03
+      00011F 2C               [12]  344 	add	a,r4
+      000120 F5*00            [12]  345 	mov	_convM2R_sloc0_1_0,a
+      000122 E4               [12]  346 	clr	a
+      000123 3D               [12]  347 	addc	a,r5
+      000124 F5*01            [12]  348 	mov	(_convM2R_sloc0_1_0 + 1),a
+      000126 8F*02            [24]  349 	mov	(_convM2R_sloc0_1_0 + 2),r7
+      000128 90r00r04         [24]  350 	mov	dptr,#_convM2R_p_1_113
+      00012B E0               [24]  351 	movx	a,@dptr
+      00012C F5*05            [12]  352 	mov	_convM2R_sloc2_1_0,a
+      00012E A3               [24]  353 	inc	dptr
+      00012F E0               [24]  354 	movx	a,@dptr
+      000130 F5*06            [12]  355 	mov	(_convM2R_sloc2_1_0 + 1),a
+      000132 A3               [24]  356 	inc	dptr
+      000133 E0               [24]  357 	movx	a,@dptr
+      000134 F5*07            [12]  358 	mov	(_convM2R_sloc2_1_0 + 2),a
+      000136 85*05 82         [24]  359 	mov	dpl,_convM2R_sloc2_1_0
+      000139 85*06 83         [24]  360 	mov	dph,(_convM2R_sloc2_1_0 + 1)
+      00013C 85*07 F0         [24]  361 	mov	b,(_convM2R_sloc2_1_0 + 2)
+      00013F 12r00r00         [24]  362 	lcall	__gptrget
+      000142 F9               [12]  363 	mov	r1,a
+      000143 7A 00            [12]  364 	mov	r2,#0x00
+      000145 89*04            [24]  365 	mov	(_convM2R_sloc1_1_0 + 1),r1
+                                    366 ;	1-genFromRTrack replaced	mov	_convM2R_sloc1_1_0,#0x00
+      000147 8A*03            [24]  367 	mov	_convM2R_sloc1_1_0,r2
+      000149 74 01            [12]  368 	mov	a,#0x01
+      00014B 25*05            [12]  369 	add	a,_convM2R_sloc2_1_0
+      00014D F9               [12]  370 	mov	r1,a
+      00014E E4               [12]  371 	clr	a
+      00014F 35*06            [12]  372 	addc	a,(_convM2R_sloc2_1_0 + 1)
+      000151 FA               [12]  373 	mov	r2,a
+      000152 AE*07            [24]  374 	mov	r6,(_convM2R_sloc2_1_0 + 2)
+      000154 89 82            [24]  375 	mov	dpl,r1
+      000156 8A 83            [24]  376 	mov	dph,r2
+      000158 8E F0            [24]  377 	mov	b,r6
+      00015A 12r00r00         [24]  378 	lcall	__gptrget
+      00015D F9               [12]  379 	mov	r1,a
+      00015E 7E 00            [12]  380 	mov	r6,#0x00
+      000160 E5*03            [12]  381 	mov	a,_convM2R_sloc1_1_0
+      000162 42 01            [12]  382 	orl	ar1,a
+      000164 E5*04            [12]  383 	mov	a,(_convM2R_sloc1_1_0 + 1)
+      000166 42 06            [12]  384 	orl	ar6,a
+      000168 85*00 82         [24]  385 	mov	dpl,_convM2R_sloc0_1_0
+      00016B 85*01 83         [24]  386 	mov	dph,(_convM2R_sloc0_1_0 + 1)
+      00016E 85*02 F0         [24]  387 	mov	b,(_convM2R_sloc0_1_0 + 2)
+      000171 E9               [12]  388 	mov	a,r1
+      000172 12r00r00         [24]  389 	lcall	__gptrput
+      000175 A3               [24]  390 	inc	dptr
+      000176 EE               [12]  391 	mov	a,r6
+      000177 12r00r00         [24]  392 	lcall	__gptrput
+                                    393 ;	../libradio/conv.c:32: p += 2;
+      00017A 90r00r04         [24]  394 	mov	dptr,#_convM2R_p_1_113
+      00017D 74 02            [12]  395 	mov	a,#0x02
+      00017F 25*05            [12]  396 	add	a,_convM2R_sloc2_1_0
+      000181 F0               [24]  397 	movx	@dptr,a
+      000182 E4               [12]  398 	clr	a
+      000183 35*06            [12]  399 	addc	a,(_convM2R_sloc2_1_0 + 1)
+      000185 A3               [24]  400 	inc	dptr
+      000186 F0               [24]  401 	movx	@dptr,a
+      000187 E5*07            [12]  402 	mov	a,(_convM2R_sloc2_1_0 + 2)
+      000189 A3               [24]  403 	inc	dptr
+      00018A F0               [24]  404 	movx	@dptr,a
+                                    405 ;	../libradio/conv.c:33: r->filterbyte3 = U8GET(p);
+      00018B 74 07            [12]  406 	mov	a,#0x07
+      00018D 2C               [12]  407 	add	a,r4
+      00018E F5*05            [12]  408 	mov	_convM2R_sloc2_1_0,a
+      000190 E4               [12]  409 	clr	a
+      000191 3D               [12]  410 	addc	a,r5
+      000192 F5*06            [12]  411 	mov	(_convM2R_sloc2_1_0 + 1),a
+      000194 8F*07            [24]  412 	mov	(_convM2R_sloc2_1_0 + 2),r7
+      000196 90r00r04         [24]  413 	mov	dptr,#_convM2R_p_1_113
+      000199 E0               [24]  414 	movx	a,@dptr
+      00019A F8               [12]  415 	mov	r0,a
+      00019B A3               [24]  416 	inc	dptr
+      00019C E0               [24]  417 	movx	a,@dptr
+      00019D F9               [12]  418 	mov	r1,a
+      00019E A3               [24]  419 	inc	dptr
+      00019F E0               [24]  420 	movx	a,@dptr
+      0001A0 FE               [12]  421 	mov	r6,a
+      0001A1 88 82            [24]  422 	mov	dpl,r0
+      0001A3 89 83            [24]  423 	mov	dph,r1
+      0001A5 8E F0            [24]  424 	mov	b,r6
+      0001A7 12r00r00         [24]  425 	lcall	__gptrget
+      0001AA FB               [12]  426 	mov	r3,a
+      0001AB 85*05 82         [24]  427 	mov	dpl,_convM2R_sloc2_1_0
+      0001AE 85*06 83         [24]  428 	mov	dph,(_convM2R_sloc2_1_0 + 1)
+      0001B1 85*07 F0         [24]  429 	mov	b,(_convM2R_sloc2_1_0 + 2)
+      0001B4 12r00r00         [24]  430 	lcall	__gptrput
+                                    431 ;	../libradio/conv.c:34: p += 1;
+      0001B7 90r00r04         [24]  432 	mov	dptr,#_convM2R_p_1_113
+      0001BA 74 01            [12]  433 	mov	a,#0x01
+      0001BC 28               [12]  434 	add	a,r0
+      0001BD F0               [24]  435 	movx	@dptr,a
+      0001BE E4               [12]  436 	clr	a
+      0001BF 39               [12]  437 	addc	a,r1
+      0001C0 A3               [24]  438 	inc	dptr
+      0001C1 F0               [24]  439 	movx	@dptr,a
+      0001C2 EE               [12]  440 	mov	a,r6
+      0001C3 A3               [24]  441 	inc	dptr
+      0001C4 F0               [24]  442 	movx	@dptr,a
+                                    443 ;	../libradio/conv.c:35: break;
+      0001C5 D0 06            [24]  444 	pop	ar6
+      0001C7 02r03r75         [24]  445 	ljmp	00115$
+                                    446 ;	../libradio/conv.c:37: case Ttxrx:
+      0001CA                        447 00110$:
+                                    448 ;	../libradio/conv.c:38: r->timeoutms = U16GET(p);
+      0001CA C0 06            [24]  449 	push	ar6
+      0001CC 74 03            [12]  450 	mov	a,#0x03
+      0001CE 2C               [12]  451 	add	a,r4
+      0001CF F5*05            [12]  452 	mov	_convM2R_sloc2_1_0,a
+      0001D1 E4               [12]  453 	clr	a
+      0001D2 3D               [12]  454 	addc	a,r5
+      0001D3 F5*06            [12]  455 	mov	(_convM2R_sloc2_1_0 + 1),a
+      0001D5 8F*07            [24]  456 	mov	(_convM2R_sloc2_1_0 + 2),r7
+      0001D7 90r00r04         [24]  457 	mov	dptr,#_convM2R_p_1_113
+      0001DA E0               [24]  458 	movx	a,@dptr
+      0001DB F5*00            [12]  459 	mov	_convM2R_sloc0_1_0,a
+      0001DD A3               [24]  460 	inc	dptr
+      0001DE E0               [24]  461 	movx	a,@dptr
+      0001DF F5*01            [12]  462 	mov	(_convM2R_sloc0_1_0 + 1),a
+      0001E1 A3               [24]  463 	inc	dptr
+      0001E2 E0               [24]  464 	movx	a,@dptr
+      0001E3 F5*02            [12]  465 	mov	(_convM2R_sloc0_1_0 + 2),a
+      0001E5 85*00 82         [24]  466 	mov	dpl,_convM2R_sloc0_1_0
+      0001E8 85*01 83         [24]  467 	mov	dph,(_convM2R_sloc0_1_0 + 1)
+      0001EB 85*02 F0         [24]  468 	mov	b,(_convM2R_sloc0_1_0 + 2)
+      0001EE 12r00r00         [24]  469 	lcall	__gptrget
+      0001F1 F9               [12]  470 	mov	r1,a
+      0001F2 7A 00            [12]  471 	mov	r2,#0x00
+      0001F4 89*04            [24]  472 	mov	(_convM2R_sloc1_1_0 + 1),r1
+                                    473 ;	1-genFromRTrack replaced	mov	_convM2R_sloc1_1_0,#0x00
+      0001F6 8A*03            [24]  474 	mov	_convM2R_sloc1_1_0,r2
+      0001F8 74 01            [12]  475 	mov	a,#0x01
+      0001FA 25*00            [12]  476 	add	a,_convM2R_sloc0_1_0
+      0001FC F9               [12]  477 	mov	r1,a
+      0001FD E4               [12]  478 	clr	a
+      0001FE 35*01            [12]  479 	addc	a,(_convM2R_sloc0_1_0 + 1)
+      000200 FA               [12]  480 	mov	r2,a
+      000201 AE*02            [24]  481 	mov	r6,(_convM2R_sloc0_1_0 + 2)
+      000203 89 82            [24]  482 	mov	dpl,r1
+      000205 8A 83            [24]  483 	mov	dph,r2
+      000207 8E F0            [24]  484 	mov	b,r6
+      000209 12r00r00         [24]  485 	lcall	__gptrget
+      00020C F9               [12]  486 	mov	r1,a
+      00020D 7E 00            [12]  487 	mov	r6,#0x00
+      00020F E5*03            [12]  488 	mov	a,_convM2R_sloc1_1_0
+      000211 42 01            [12]  489 	orl	ar1,a
+      000213 E5*04            [12]  490 	mov	a,(_convM2R_sloc1_1_0 + 1)
+      000215 42 06            [12]  491 	orl	ar6,a
+      000217 85*05 82         [24]  492 	mov	dpl,_convM2R_sloc2_1_0
+      00021A 85*06 83         [24]  493 	mov	dph,(_convM2R_sloc2_1_0 + 1)
+      00021D 85*07 F0         [24]  494 	mov	b,(_convM2R_sloc2_1_0 + 2)
+      000220 E9               [12]  495 	mov	a,r1
+      000221 12r00r00         [24]  496 	lcall	__gptrput
+      000224 A3               [24]  497 	inc	dptr
+      000225 EE               [12]  498 	mov	a,r6
+      000226 12r00r00         [24]  499 	lcall	__gptrput
+                                    500 ;	../libradio/conv.c:39: p += 2;
+      000229 90r00r04         [24]  501 	mov	dptr,#_convM2R_p_1_113
+      00022C 74 02            [12]  502 	mov	a,#0x02
+      00022E 25*00            [12]  503 	add	a,_convM2R_sloc0_1_0
+      000230 F0               [24]  504 	movx	@dptr,a
+      000231 E4               [12]  505 	clr	a
+      000232 35*01            [12]  506 	addc	a,(_convM2R_sloc0_1_0 + 1)
+      000234 A3               [24]  507 	inc	dptr
+      000235 F0               [24]  508 	movx	@dptr,a
+      000236 E5*02            [12]  509 	mov	a,(_convM2R_sloc0_1_0 + 2)
+      000238 A3               [24]  510 	inc	dptr
+      000239 F0               [24]  511 	movx	@dptr,a
+                                    512 ;	../libradio/conv.c:40: r->filterbyte3 = U8GET(p);
+      00023A 74 07            [12]  513 	mov	a,#0x07
+      00023C 2C               [12]  514 	add	a,r4
+      00023D F5*05            [12]  515 	mov	_convM2R_sloc2_1_0,a
+      00023F E4               [12]  516 	clr	a
+      000240 3D               [12]  517 	addc	a,r5
+      000241 F5*06            [12]  518 	mov	(_convM2R_sloc2_1_0 + 1),a
+      000243 8F*07            [24]  519 	mov	(_convM2R_sloc2_1_0 + 2),r7
+      000245 90r00r04         [24]  520 	mov	dptr,#_convM2R_p_1_113
+      000248 E0               [24]  521 	movx	a,@dptr
+      000249 F8               [12]  522 	mov	r0,a
+      00024A A3               [24]  523 	inc	dptr
+      00024B E0               [24]  524 	movx	a,@dptr
+      00024C F9               [12]  525 	mov	r1,a
+      00024D A3               [24]  526 	inc	dptr
+      00024E E0               [24]  527 	movx	a,@dptr
+      00024F FE               [12]  528 	mov	r6,a
+      000250 88 82            [24]  529 	mov	dpl,r0
+      000252 89 83            [24]  530 	mov	dph,r1
+      000254 8E F0            [24]  531 	mov	b,r6
+      000256 12r00r00         [24]  532 	lcall	__gptrget
+      000259 FB               [12]  533 	mov	r3,a
+      00025A 85*05 82         [24]  534 	mov	dpl,_convM2R_sloc2_1_0
+      00025D 85*06 83         [24]  535 	mov	dph,(_convM2R_sloc2_1_0 + 1)
+      000260 85*07 F0         [24]  536 	mov	b,(_convM2R_sloc2_1_0 + 2)
+      000263 12r00r00         [24]  537 	lcall	__gptrput
+                                    538 ;	../libradio/conv.c:41: p += 1;
+      000266 90r00r04         [24]  539 	mov	dptr,#_convM2R_p_1_113
+      000269 74 01            [12]  540 	mov	a,#0x01
+      00026B 28               [12]  541 	add	a,r0
+      00026C F0               [24]  542 	movx	@dptr,a
+      00026D E4               [12]  543 	clr	a
+      00026E 39               [12]  544 	addc	a,r1
+      00026F A3               [24]  545 	inc	dptr
+      000270 F0               [24]  546 	movx	@dptr,a
+      000271 EE               [12]  547 	mov	a,r6
+      000272 A3               [24]  548 	inc	dptr
+      000273 F0               [24]  549 	movx	@dptr,a
+                                    550 ;	../libradio/conv.c:57: return size;
+      000274 D0 06            [24]  551 	pop	ar6
+                                    552 ;	../libradio/conv.c:43: case Ttx:
+      000276                        553 00111$:
+                                    554 ;	../libradio/conv.c:44: r->preamblems = U16GET(p);
+      000276 C0 06            [24]  555 	push	ar6
+      000278 74 05            [12]  556 	mov	a,#0x05
+      00027A 2C               [12]  557 	add	a,r4
+      00027B F5*05            [12]  558 	mov	_convM2R_sloc2_1_0,a
+      00027D E4               [12]  559 	clr	a
+      00027E 3D               [12]  560 	addc	a,r5
+      00027F F5*06            [12]  561 	mov	(_convM2R_sloc2_1_0 + 1),a
+      000281 8F*07            [24]  562 	mov	(_convM2R_sloc2_1_0 + 2),r7
+      000283 90r00r04         [24]  563 	mov	dptr,#_convM2R_p_1_113
+      000286 E0               [24]  564 	movx	a,@dptr
+      000287 F5*00            [12]  565 	mov	_convM2R_sloc0_1_0,a
+      000289 A3               [24]  566 	inc	dptr
+      00028A E0               [24]  567 	movx	a,@dptr
+      00028B F5*01            [12]  568 	mov	(_convM2R_sloc0_1_0 + 1),a
+      00028D A3               [24]  569 	inc	dptr
+      00028E E0               [24]  570 	movx	a,@dptr
+      00028F F5*02            [12]  571 	mov	(_convM2R_sloc0_1_0 + 2),a
+      000291 85*00 82         [24]  572 	mov	dpl,_convM2R_sloc0_1_0
+      000294 85*01 83         [24]  573 	mov	dph,(_convM2R_sloc0_1_0 + 1)
+      000297 85*02 F0         [24]  574 	mov	b,(_convM2R_sloc0_1_0 + 2)
+      00029A 12r00r00         [24]  575 	lcall	__gptrget
+      00029D F9               [12]  576 	mov	r1,a
+      00029E 7E 00            [12]  577 	mov	r6,#0x00
+      0002A0 89*04            [24]  578 	mov	(_convM2R_sloc1_1_0 + 1),r1
+                                    579 ;	1-genFromRTrack replaced	mov	_convM2R_sloc1_1_0,#0x00
+      0002A2 8E*03            [24]  580 	mov	_convM2R_sloc1_1_0,r6
+      0002A4 74 01            [12]  581 	mov	a,#0x01
+      0002A6 25*00            [12]  582 	add	a,_convM2R_sloc0_1_0
+      0002A8 F9               [12]  583 	mov	r1,a
+      0002A9 E4               [12]  584 	clr	a
+      0002AA 35*01            [12]  585 	addc	a,(_convM2R_sloc0_1_0 + 1)
+      0002AC FB               [12]  586 	mov	r3,a
+      0002AD AE*02            [24]  587 	mov	r6,(_convM2R_sloc0_1_0 + 2)
+      0002AF 89 82            [24]  588 	mov	dpl,r1
+      0002B1 8B 83            [24]  589 	mov	dph,r3
+      0002B3 8E F0            [24]  590 	mov	b,r6
+      0002B5 12r00r00         [24]  591 	lcall	__gptrget
+      0002B8 F9               [12]  592 	mov	r1,a
+      0002B9 7E 00            [12]  593 	mov	r6,#0x00
+      0002BB E5*03            [12]  594 	mov	a,_convM2R_sloc1_1_0
+      0002BD 42 01            [12]  595 	orl	ar1,a
+      0002BF E5*04            [12]  596 	mov	a,(_convM2R_sloc1_1_0 + 1)
+      0002C1 42 06            [12]  597 	orl	ar6,a
+      0002C3 85*05 82         [24]  598 	mov	dpl,_convM2R_sloc2_1_0
+      0002C6 85*06 83         [24]  599 	mov	dph,(_convM2R_sloc2_1_0 + 1)
+      0002C9 85*07 F0         [24]  600 	mov	b,(_convM2R_sloc2_1_0 + 2)
+      0002CC E9               [12]  601 	mov	a,r1
+      0002CD 12r00r00         [24]  602 	lcall	__gptrput
+      0002D0 A3               [24]  603 	inc	dptr
+      0002D1 EE               [12]  604 	mov	a,r6
+      0002D2 12r00r00         [24]  605 	lcall	__gptrput
+                                    606 ;	../libradio/conv.c:45: p += 2;
+      0002D5 90r00r04         [24]  607 	mov	dptr,#_convM2R_p_1_113
+      0002D8 74 02            [12]  608 	mov	a,#0x02
+      0002DA 25*00            [12]  609 	add	a,_convM2R_sloc0_1_0
+      0002DC F0               [24]  610 	movx	@dptr,a
+      0002DD E4               [12]  611 	clr	a
+      0002DE 35*01            [12]  612 	addc	a,(_convM2R_sloc0_1_0 + 1)
+      0002E0 A3               [24]  613 	inc	dptr
+      0002E1 F0               [24]  614 	movx	@dptr,a
+      0002E2 E5*02            [12]  615 	mov	a,(_convM2R_sloc0_1_0 + 2)
+      0002E4 A3               [24]  616 	inc	dptr
+      0002E5 F0               [24]  617 	movx	@dptr,a
+                                    618 ;	../libradio/conv.c:57: return size;
+      0002E6 D0 06            [24]  619 	pop	ar6
+                                    620 ;	../libradio/conv.c:47: case Rtxrx:
+      0002E8                        621 00113$:
+                                    622 ;	../libradio/conv.c:48: memcpy(r->pkt, p, sizeof r->pkt);
+      0002E8 C0 06            [24]  623 	push	ar6
+      0002EA 74 08            [12]  624 	mov	a,#0x08
+      0002EC 2C               [12]  625 	add	a,r4
+      0002ED F9               [12]  626 	mov	r1,a
+      0002EE E4               [12]  627 	clr	a
+      0002EF 3D               [12]  628 	addc	a,r5
+      0002F0 FA               [12]  629 	mov	r2,a
+      0002F1 8F 03            [24]  630 	mov	ar3,r7
+      0002F3 89*05            [24]  631 	mov	_convM2R_sloc2_1_0,r1
+      0002F5 8A*06            [24]  632 	mov	(_convM2R_sloc2_1_0 + 1),r2
+      0002F7 8B*07            [24]  633 	mov	(_convM2R_sloc2_1_0 + 2),r3
+      0002F9 90r00r04         [24]  634 	mov	dptr,#_convM2R_p_1_113
+      0002FC E0               [24]  635 	movx	a,@dptr
+      0002FD F8               [12]  636 	mov	r0,a
+      0002FE A3               [24]  637 	inc	dptr
+      0002FF E0               [24]  638 	movx	a,@dptr
+      000300 FB               [12]  639 	mov	r3,a
+      000301 A3               [24]  640 	inc	dptr
+      000302 E0               [24]  641 	movx	a,@dptr
+      000303 FE               [12]  642 	mov	r6,a
+      000304 90r00r00         [24]  643 	mov	dptr,#_memcpy_PARM_2
+      000307 E8               [12]  644 	mov	a,r0
+      000308 F0               [24]  645 	movx	@dptr,a
+      000309 EB               [12]  646 	mov	a,r3
+      00030A A3               [24]  647 	inc	dptr
+      00030B F0               [24]  648 	movx	@dptr,a
+      00030C EE               [12]  649 	mov	a,r6
+      00030D A3               [24]  650 	inc	dptr
+      00030E F0               [24]  651 	movx	@dptr,a
+      00030F 90r00r00         [24]  652 	mov	dptr,#_memcpy_PARM_3
+      000312 74 4E            [12]  653 	mov	a,#0x4E
+      000314 F0               [24]  654 	movx	@dptr,a
+      000315 E4               [12]  655 	clr	a
+      000316 A3               [24]  656 	inc	dptr
+      000317 F0               [24]  657 	movx	@dptr,a
+      000318 85*05 82         [24]  658 	mov	dpl,_convM2R_sloc2_1_0
+      00031B 85*06 83         [24]  659 	mov	dph,(_convM2R_sloc2_1_0 + 1)
+      00031E 85*07 F0         [24]  660 	mov	b,(_convM2R_sloc2_1_0 + 2)
+      000321 C0 06            [24]  661 	push	ar6
+      000323 C0 03            [24]  662 	push	ar3
+      000325 C0 00            [24]  663 	push	ar0
+      000327 12r00r00         [24]  664 	lcall	_memcpy
+      00032A D0 00            [24]  665 	pop	ar0
+      00032C D0 03            [24]  666 	pop	ar3
+      00032E D0 06            [24]  667 	pop	ar6
+                                    668 ;	../libradio/conv.c:49: p += sizeof r->pkt;
+      000330 90r00r04         [24]  669 	mov	dptr,#_convM2R_p_1_113
+      000333 74 4E            [12]  670 	mov	a,#0x4E
+      000335 28               [12]  671 	add	a,r0
+      000336 F0               [24]  672 	movx	@dptr,a
+      000337 E4               [12]  673 	clr	a
+      000338 3B               [12]  674 	addc	a,r3
+      000339 A3               [24]  675 	inc	dptr
+      00033A F0               [24]  676 	movx	@dptr,a
+      00033B EE               [12]  677 	mov	a,r6
+      00033C A3               [24]  678 	inc	dptr
+      00033D F0               [24]  679 	movx	@dptr,a
+                                    680 ;	../libradio/conv.c:50: break;
+      00033E D0 06            [24]  681 	pop	ar6
+                                    682 ;	../libradio/conv.c:52: case Rerr:
+      000340 80 33            [24]  683 	sjmp	00115$
+      000342                        684 00114$:
+                                    685 ;	../libradio/conv.c:53: r->err = U8GET(p);
+      000342 74 02            [12]  686 	mov	a,#0x02
+      000344 2C               [12]  687 	add	a,r4
+      000345 FC               [12]  688 	mov	r4,a
+      000346 E4               [12]  689 	clr	a
+      000347 3D               [12]  690 	addc	a,r5
+      000348 FD               [12]  691 	mov	r5,a
+      000349 90r00r04         [24]  692 	mov	dptr,#_convM2R_p_1_113
+      00034C E0               [24]  693 	movx	a,@dptr
+      00034D F9               [12]  694 	mov	r1,a
+      00034E A3               [24]  695 	inc	dptr
+      00034F E0               [24]  696 	movx	a,@dptr
+      000350 FA               [12]  697 	mov	r2,a
+      000351 A3               [24]  698 	inc	dptr
+      000352 E0               [24]  699 	movx	a,@dptr
+      000353 FB               [12]  700 	mov	r3,a
+      000354 89 82            [24]  701 	mov	dpl,r1
+      000356 8A 83            [24]  702 	mov	dph,r2
+      000358 8B F0            [24]  703 	mov	b,r3
+      00035A 12r00r00         [24]  704 	lcall	__gptrget
+      00035D F8               [12]  705 	mov	r0,a
+      00035E 8C 82            [24]  706 	mov	dpl,r4
+      000360 8D 83            [24]  707 	mov	dph,r5
+      000362 8F F0            [24]  708 	mov	b,r7
+      000364 12r00r00         [24]  709 	lcall	__gptrput
+                                    710 ;	../libradio/conv.c:54: p += 1;
+      000367 90r00r04         [24]  711 	mov	dptr,#_convM2R_p_1_113
+      00036A 74 01            [12]  712 	mov	a,#0x01
+      00036C 29               [12]  713 	add	a,r1
+      00036D F0               [24]  714 	movx	@dptr,a
+      00036E E4               [12]  715 	clr	a
+      00036F 3A               [12]  716 	addc	a,r2
+      000370 A3               [24]  717 	inc	dptr
+      000371 F0               [24]  718 	movx	@dptr,a
+      000372 EB               [12]  719 	mov	a,r3
+      000373 A3               [24]  720 	inc	dptr
+      000374 F0               [24]  721 	movx	@dptr,a
+                                    722 ;	../libradio/conv.c:55: }
+      000375                        723 00115$:
+                                    724 ;	../libradio/conv.c:57: return size;
+      000375 7F 00            [12]  725 	mov	r7,#0x00
+      000377 8E 82            [24]  726 	mov	dpl,r6
+      000379 8F 83            [24]  727 	mov	dph,r7
+      00037B 22               [24]  728 	ret
+                                    729 ;------------------------------------------------------------
+                                    730 ;Allocation info for local variables in function 'convR2M'
+                                    731 ;------------------------------------------------------------
+                                    732 ;sloc0                     Allocated with name '_convR2M_sloc0_1_0'
+                                    733 ;sloc1                     Allocated with name '_convR2M_sloc1_1_0'
+                                    734 ;sloc2                     Allocated with name '_convR2M_sloc2_1_0'
+                                    735 ;sloc3                     Allocated with name '_convR2M_sloc3_1_0'
+                                    736 ;sloc4                     Allocated with name '_convR2M_sloc4_1_0'
+                                    737 ;ap                        Allocated with name '_convR2M_PARM_2'
+                                    738 ;n                         Allocated with name '_convR2M_PARM_3'
+                                    739 ;r                         Allocated with name '_convR2M_r_1_116'
+                                    740 ;p                         Allocated with name '_convR2M_p_1_117'
+                                    741 ;size                      Allocated with name '_convR2M_size_1_117'
+                                    742 ;------------------------------------------------------------
+                                    743 ;	../libradio/conv.c:61: convR2M(Rcall *r, uint8 *ap, uint8 n)
+                                    744 ;	-----------------------------------------
+                                    745 ;	 function convR2M
+                                    746 ;	-----------------------------------------
+      00037C                        747 _convR2M:
+      00037C AF F0            [24]  748 	mov	r7,b
+      00037E AE 83            [24]  749 	mov	r6,dph
+      000380 E5 82            [12]  750 	mov	a,dpl
+      000382 90r00r0C         [24]  751 	mov	dptr,#_convR2M_r_1_116
+      000385 F0               [24]  752 	movx	@dptr,a
+      000386 EE               [12]  753 	mov	a,r6
+      000387 A3               [24]  754 	inc	dptr
+      000388 F0               [24]  755 	movx	@dptr,a
+      000389 EF               [12]  756 	mov	a,r7
+      00038A A3               [24]  757 	inc	dptr
+      00038B F0               [24]  758 	movx	@dptr,a
+                                    759 ;	../libradio/conv.c:63: uint8 *p = ap;
+      00038C 90r00r08         [24]  760 	mov	dptr,#_convR2M_PARM_2
+      00038F E0               [24]  761 	movx	a,@dptr
+      000390 FD               [12]  762 	mov	r5,a
+      000391 A3               [24]  763 	inc	dptr
+      000392 E0               [24]  764 	movx	a,@dptr
+      000393 FE               [12]  765 	mov	r6,a
+      000394 A3               [24]  766 	inc	dptr
+      000395 E0               [24]  767 	movx	a,@dptr
+      000396 FF               [12]  768 	mov	r7,a
+                                    769 ;	../libradio/conv.c:66: size = 3; // size, type, flag
+      000397 90r00r12         [24]  770 	mov	dptr,#_convR2M_size_1_117
+      00039A 74 03            [12]  771 	mov	a,#0x03
+      00039C F0               [24]  772 	movx	@dptr,a
+                                    773 ;	../libradio/conv.c:67: switch(r->type){
+      00039D 90r00r0C         [24]  774 	mov	dptr,#_convR2M_r_1_116
+      0003A0 E0               [24]  775 	movx	a,@dptr
+      0003A1 F5*08            [12]  776 	mov	_convR2M_sloc0_1_0,a
+      0003A3 A3               [24]  777 	inc	dptr
+      0003A4 E0               [24]  778 	movx	a,@dptr
+      0003A5 F5*09            [12]  779 	mov	(_convR2M_sloc0_1_0 + 1),a
+      0003A7 A3               [24]  780 	inc	dptr
+      0003A8 E0               [24]  781 	movx	a,@dptr
+      0003A9 F5*0A            [12]  782 	mov	(_convR2M_sloc0_1_0 + 2),a
+      0003AB 85*08 82         [24]  783 	mov	dpl,_convR2M_sloc0_1_0
+      0003AE 85*09 83         [24]  784 	mov	dph,(_convR2M_sloc0_1_0 + 1)
+      0003B1 85*0A F0         [24]  785 	mov	b,(_convR2M_sloc0_1_0 + 2)
+      0003B4 12r00r00         [24]  786 	lcall	__gptrget
+      0003B7 F9               [12]  787 	mov	r1,a
+      0003B8 B9 01 02         [24]  788 	cjne	r1,#0x01,00189$
+      0003BB 80 2C            [24]  789 	sjmp	00105$
+      0003BD                        790 00189$:
+      0003BD B9 02 02         [24]  791 	cjne	r1,#0x02,00190$
+      0003C0 80 3D            [24]  792 	sjmp	00109$
+      0003C2                        793 00190$:
+      0003C2 B9 03 02         [24]  794 	cjne	r1,#0x03,00191$
+      0003C5 80 30            [24]  795 	sjmp	00107$
+      0003C7                        796 00191$:
+      0003C7 B9 04 02         [24]  797 	cjne	r1,#0x04,00192$
+      0003CA 80 43            [24]  798 	sjmp	00111$
+      0003CC                        799 00192$:
+      0003CC B9 05 02         [24]  800 	cjne	r1,#0x05,00193$
+      0003CF 80 20            [24]  801 	sjmp	00106$
+      0003D1                        802 00193$:
+      0003D1 B9 06 02         [24]  803 	cjne	r1,#0x06,00194$
+      0003D4 80 29            [24]  804 	sjmp	00109$
+      0003D6                        805 00194$:
+      0003D6 B9 07 02         [24]  806 	cjne	r1,#0x07,00195$
+      0003D9 80 34            [24]  807 	sjmp	00111$
+      0003DB                        808 00195$:
+      0003DB B9 08 02         [24]  809 	cjne	r1,#0x08,00196$
+      0003DE 80 2F            [24]  810 	sjmp	00111$
+      0003E0                        811 00196$:
+      0003E0 B9 80 02         [24]  812 	cjne	r1,#0x80,00197$
+      0003E3 80 24            [24]  813 	sjmp	00110$
+      0003E5                        814 00197$:
+                                    815 ;	../libradio/conv.c:68: default: return 0;
+      0003E5 90 00 00         [24]  816 	mov	dptr,#0x0000
+      0003E8 22               [24]  817 	ret
+                                    818 ;	../libradio/conv.c:76: case Trx:
+      0003E9                        819 00105$:
+                                    820 ;	../libradio/conv.c:78: size += 1; // filterbyte3
+      0003E9 90r00r12         [24]  821 	mov	dptr,#_convR2M_size_1_117
+      0003EC 74 06            [12]  822 	mov	a,#0x06
+      0003EE F0               [24]  823 	movx	@dptr,a
+                                    824 ;	../libradio/conv.c:79: break;
+                                    825 ;	../libradio/conv.c:81: case Ttxrx:
+      0003EF 80 1E            [24]  826 	sjmp	00111$
+      0003F1                        827 00106$:
+                                    828 ;	../libradio/conv.c:83: size += 1; // filterbyte3
+      0003F1 90r00r12         [24]  829 	mov	dptr,#_convR2M_size_1_117
+      0003F4 74 06            [12]  830 	mov	a,#0x06
+      0003F6 F0               [24]  831 	movx	@dptr,a
+                                    832 ;	../libradio/conv.c:84: case Ttx:
+      0003F7                        833 00107$:
+                                    834 ;	../libradio/conv.c:85: size += 2; // preamble
+      0003F7 90r00r12         [24]  835 	mov	dptr,#_convR2M_size_1_117
+      0003FA E0               [24]  836 	movx	a,@dptr
+      0003FB F9               [12]  837 	mov	r1,a
+      0003FC 24 02            [12]  838 	add	a,#0x02
+      0003FE F0               [24]  839 	movx	@dptr,a
+                                    840 ;	../libradio/conv.c:87: case Rtxrx:
+      0003FF                        841 00109$:
+                                    842 ;	../libradio/conv.c:88: size += Npkt;
+      0003FF 90r00r12         [24]  843 	mov	dptr,#_convR2M_size_1_117
+      000402 E0               [24]  844 	movx	a,@dptr
+      000403 F9               [12]  845 	mov	r1,a
+      000404 24 4E            [12]  846 	add	a,#0x4E
+      000406 F0               [24]  847 	movx	@dptr,a
+                                    848 ;	../libradio/conv.c:89: break;
+                                    849 ;	../libradio/conv.c:91: case Rerr:
+      000407 80 06            [24]  850 	sjmp	00111$
+      000409                        851 00110$:
+                                    852 ;	../libradio/conv.c:92: size += 1;
+      000409 90r00r12         [24]  853 	mov	dptr,#_convR2M_size_1_117
+      00040C 74 04            [12]  854 	mov	a,#0x04
+      00040E F0               [24]  855 	movx	@dptr,a
+                                    856 ;	../libradio/conv.c:94: }
+      00040F                        857 00111$:
+                                    858 ;	../libradio/conv.c:96: if(n < size)
+      00040F 90r00r0B         [24]  859 	mov	dptr,#_convR2M_PARM_3
+      000412 E0               [24]  860 	movx	a,@dptr
+      000413 F9               [12]  861 	mov	r1,a
+      000414 90r00r12         [24]  862 	mov	dptr,#_convR2M_size_1_117
+      000417 E0               [24]  863 	movx	a,@dptr
+      000418 F8               [12]  864 	mov	r0,a
+      000419 C3               [12]  865 	clr	c
+      00041A E9               [12]  866 	mov	a,r1
+      00041B 98               [12]  867 	subb	a,r0
+      00041C 50 04            [24]  868 	jnc	00113$
+                                    869 ;	../libradio/conv.c:97: return 0;
+      00041E 90 00 00         [24]  870 	mov	dptr,#0x0000
+      000421 22               [24]  871 	ret
+      000422                        872 00113$:
+                                    873 ;	../libradio/conv.c:99: U8PUT(p, size);
+      000422 8D 82            [24]  874 	mov	dpl,r5
+      000424 8E 83            [24]  875 	mov	dph,r6
+      000426 8F F0            [24]  876 	mov	b,r7
+      000428 E8               [12]  877 	mov	a,r0
+      000429 12r00r00         [24]  878 	lcall	__gptrput
+                                    879 ;	../libradio/conv.c:100: p += 1;
+      00042C C0 00            [24]  880 	push	ar0
+      00042E 74 01            [12]  881 	mov	a,#0x01
+      000430 2D               [12]  882 	add	a,r5
+      000431 F8               [12]  883 	mov	r0,a
+      000432 E4               [12]  884 	clr	a
+      000433 3E               [12]  885 	addc	a,r6
+      000434 F9               [12]  886 	mov	r1,a
+      000435 8F 04            [24]  887 	mov	ar4,r7
+                                    888 ;	../libradio/conv.c:101: U8PUT(p, r->type);
+      000437 85*08 82         [24]  889 	mov	dpl,_convR2M_sloc0_1_0
+      00043A 85*09 83         [24]  890 	mov	dph,(_convR2M_sloc0_1_0 + 1)
+      00043D 85*0A F0         [24]  891 	mov	b,(_convR2M_sloc0_1_0 + 2)
+      000440 12r00r00         [24]  892 	lcall	__gptrget
+      000443 FB               [12]  893 	mov	r3,a
+      000444 88 82            [24]  894 	mov	dpl,r0
+      000446 89 83            [24]  895 	mov	dph,r1
+      000448 8C F0            [24]  896 	mov	b,r4
+      00044A 12r00r00         [24]  897 	lcall	__gptrput
+                                    898 ;	../libradio/conv.c:102: p += 1;
+      00044D 74 02            [12]  899 	mov	a,#0x02
+      00044F 2D               [12]  900 	add	a,r5
+      000450 F5*0B            [12]  901 	mov	_convR2M_sloc1_1_0,a
+      000452 E4               [12]  902 	clr	a
+      000453 3E               [12]  903 	addc	a,r6
+      000454 F5*0C            [12]  904 	mov	(_convR2M_sloc1_1_0 + 1),a
+      000456 8F*0D            [24]  905 	mov	(_convR2M_sloc1_1_0 + 2),r7
+                                    906 ;	../libradio/conv.c:103: U8PUT(p, r->flag);
+      000458 74 01            [12]  907 	mov	a,#0x01
+      00045A 25*08            [12]  908 	add	a,_convR2M_sloc0_1_0
+      00045C F8               [12]  909 	mov	r0,a
+      00045D E4               [12]  910 	clr	a
+      00045E 35*09            [12]  911 	addc	a,(_convR2M_sloc0_1_0 + 1)
+      000460 F9               [12]  912 	mov	r1,a
+      000461 AC*0A            [24]  913 	mov	r4,(_convR2M_sloc0_1_0 + 2)
+      000463 88 82            [24]  914 	mov	dpl,r0
+      000465 89 83            [24]  915 	mov	dph,r1
+      000467 8C F0            [24]  916 	mov	b,r4
+      000469 12r00r00         [24]  917 	lcall	__gptrget
+      00046C F8               [12]  918 	mov	r0,a
+      00046D 85*0B 82         [24]  919 	mov	dpl,_convR2M_sloc1_1_0
+      000470 85*0C 83         [24]  920 	mov	dph,(_convR2M_sloc1_1_0 + 1)
+      000473 85*0D F0         [24]  921 	mov	b,(_convR2M_sloc1_1_0 + 2)
+      000476 12r00r00         [24]  922 	lcall	__gptrput
+                                    923 ;	../libradio/conv.c:104: p += 1;
+      000479 74 03            [12]  924 	mov	a,#0x03
+      00047B 2D               [12]  925 	add	a,r5
+      00047C F5*0B            [12]  926 	mov	_convR2M_sloc1_1_0,a
+      00047E E4               [12]  927 	clr	a
+      00047F 3E               [12]  928 	addc	a,r6
+      000480 F5*0C            [12]  929 	mov	(_convR2M_sloc1_1_0 + 1),a
+      000482 8F*0D            [24]  930 	mov	(_convR2M_sloc1_1_0 + 2),r7
+      000484 90r00r0F         [24]  931 	mov	dptr,#_convR2M_p_1_117
+      000487 E5*0B            [12]  932 	mov	a,_convR2M_sloc1_1_0
+      000489 F0               [24]  933 	movx	@dptr,a
+      00048A E5*0C            [12]  934 	mov	a,(_convR2M_sloc1_1_0 + 1)
+      00048C A3               [24]  935 	inc	dptr
+      00048D F0               [24]  936 	movx	@dptr,a
+      00048E E5*0D            [12]  937 	mov	a,(_convR2M_sloc1_1_0 + 2)
+      000490 A3               [24]  938 	inc	dptr
+      000491 F0               [24]  939 	movx	@dptr,a
+                                    940 ;	../libradio/conv.c:106: switch(r->type){
+      000492 85*08 82         [24]  941 	mov	dpl,_convR2M_sloc0_1_0
+      000495 85*09 83         [24]  942 	mov	dph,(_convR2M_sloc0_1_0 + 1)
+      000498 85*0A F0         [24]  943 	mov	b,(_convR2M_sloc0_1_0 + 2)
+      00049B 12r00r00         [24]  944 	lcall	__gptrget
+      00049E F5*0E            [12]  945 	mov	_convR2M_sloc2_1_0,a
+      0004A0 74 01            [12]  946 	mov	a,#0x01
+      0004A2 B5*0E 04         [24]  947 	cjne	a,_convR2M_sloc2_1_0,00199$
+      0004A5 D0 00            [24]  948 	pop	ar0
+      0004A7 80 46            [24]  949 	sjmp	00118$
+      0004A9                        950 00199$:
+      0004A9 D0 00            [24]  951 	pop	ar0
+      0004AB 74 02            [12]  952 	mov	a,#0x02
+      0004AD B5*0E 03         [24]  953 	cjne	a,_convR2M_sloc2_1_0,00200$
+      0004B0 02r06r7E         [24]  954 	ljmp	00122$
+      0004B3                        955 00200$:
+      0004B3 74 03            [12]  956 	mov	a,#0x03
+      0004B5 B5*0E 03         [24]  957 	cjne	a,_convR2M_sloc2_1_0,00201$
+      0004B8 02r06r0A         [24]  958 	ljmp	00120$
+      0004BB                        959 00201$:
+      0004BB 74 04            [12]  960 	mov	a,#0x04
+      0004BD B5*0E 03         [24]  961 	cjne	a,_convR2M_sloc2_1_0,00202$
+      0004C0 02r07r16         [24]  962 	ljmp	00124$
+      0004C3                        963 00202$:
+      0004C3 74 05            [12]  964 	mov	a,#0x05
+      0004C5 B5*0E 03         [24]  965 	cjne	a,_convR2M_sloc2_1_0,00203$
+      0004C8 02r05r7E         [24]  966 	ljmp	00119$
+      0004CB                        967 00203$:
+      0004CB 74 06            [12]  968 	mov	a,#0x06
+      0004CD B5*0E 03         [24]  969 	cjne	a,_convR2M_sloc2_1_0,00204$
+      0004D0 02r06r7E         [24]  970 	ljmp	00122$
+      0004D3                        971 00204$:
+      0004D3 74 07            [12]  972 	mov	a,#0x07
+      0004D5 B5*0E 03         [24]  973 	cjne	a,_convR2M_sloc2_1_0,00205$
+      0004D8 02r07r16         [24]  974 	ljmp	00124$
+      0004DB                        975 00205$:
+      0004DB 74 08            [12]  976 	mov	a,#0x08
+      0004DD B5*0E 03         [24]  977 	cjne	a,_convR2M_sloc2_1_0,00206$
+      0004E0 02r07r16         [24]  978 	ljmp	00124$
+      0004E3                        979 00206$:
+      0004E3 74 80            [12]  980 	mov	a,#0x80
+      0004E5 B5*0E 03         [24]  981 	cjne	a,_convR2M_sloc2_1_0,00207$
+      0004E8 02r06rE7         [24]  982 	ljmp	00123$
+      0004EB                        983 00207$:
+                                    984 ;	../libradio/conv.c:109: return 0;
+      0004EB 90 00 00         [24]  985 	mov	dptr,#0x0000
+      0004EE 22               [24]  986 	ret
+                                    987 ;	../libradio/conv.c:116: case Trx:
+      0004EF                        988 00118$:
+                                    989 ;	../libradio/conv.c:117: U16PUT(p, r->timeoutms);
+      0004EF C0 00            [24]  990 	push	ar0
+      0004F1 74 03            [12]  991 	mov	a,#0x03
+      0004F3 25*08            [12]  992 	add	a,_convR2M_sloc0_1_0
+      0004F5 F5*0F            [12]  993 	mov	_convR2M_sloc3_1_0,a
+      0004F7 E4               [12]  994 	clr	a
+      0004F8 35*09            [12]  995 	addc	a,(_convR2M_sloc0_1_0 + 1)
+      0004FA F5*10            [12]  996 	mov	(_convR2M_sloc3_1_0 + 1),a
+      0004FC 85*0A*11         [24]  997 	mov	(_convR2M_sloc3_1_0 + 2),(_convR2M_sloc0_1_0 + 2)
+      0004FF 85*0F 82         [24]  998 	mov	dpl,_convR2M_sloc3_1_0
+      000502 85*10 83         [24]  999 	mov	dph,(_convR2M_sloc3_1_0 + 1)
+      000505 85*11 F0         [24] 1000 	mov	b,(_convR2M_sloc3_1_0 + 2)
+      000508 12r00r00         [24] 1001 	lcall	__gptrget
+      00050B A3               [24] 1002 	inc	dptr
+      00050C 12r00r00         [24] 1003 	lcall	__gptrget
+      00050F 85*0B 82         [24] 1004 	mov	dpl,_convR2M_sloc1_1_0
+      000512 85*0C 83         [24] 1005 	mov	dph,(_convR2M_sloc1_1_0 + 1)
+      000515 85*0D F0         [24] 1006 	mov	b,(_convR2M_sloc1_1_0 + 2)
+      000518 12r00r00         [24] 1007 	lcall	__gptrput
+      00051B 74 04            [12] 1008 	mov	a,#0x04
+      00051D 2D               [12] 1009 	add	a,r5
+      00051E F8               [12] 1010 	mov	r0,a
+      00051F E4               [12] 1011 	clr	a
+      000520 3E               [12] 1012 	addc	a,r6
+      000521 F9               [12] 1013 	mov	r1,a
+      000522 8F 04            [24] 1014 	mov	ar4,r7
+      000524 85*0F 82         [24] 1015 	mov	dpl,_convR2M_sloc3_1_0
+      000527 85*10 83         [24] 1016 	mov	dph,(_convR2M_sloc3_1_0 + 1)
+      00052A 85*11 F0         [24] 1017 	mov	b,(_convR2M_sloc3_1_0 + 2)
+      00052D 12r00r00         [24] 1018 	lcall	__gptrget
+      000530 FA               [12] 1019 	mov	r2,a
+      000531 A3               [24] 1020 	inc	dptr
+      000532 12r00r00         [24] 1021 	lcall	__gptrget
+      000535 FB               [12] 1022 	mov	r3,a
+      000536 88 82            [24] 1023 	mov	dpl,r0
+      000538 89 83            [24] 1024 	mov	dph,r1
+      00053A 8C F0            [24] 1025 	mov	b,r4
+      00053C EA               [12] 1026 	mov	a,r2
+      00053D 12r00r00         [24] 1027 	lcall	__gptrput
+                                   1028 ;	../libradio/conv.c:118: p += 2;
+      000540 74 05            [12] 1029 	mov	a,#0x05
+      000542 2D               [12] 1030 	add	a,r5
+      000543 F5*0F            [12] 1031 	mov	_convR2M_sloc3_1_0,a
+      000545 E4               [12] 1032 	clr	a
+      000546 3E               [12] 1033 	addc	a,r6
+      000547 F5*10            [12] 1034 	mov	(_convR2M_sloc3_1_0 + 1),a
+      000549 8F*11            [24] 1035 	mov	(_convR2M_sloc3_1_0 + 2),r7
+                                   1036 ;	../libradio/conv.c:119: U8PUT(p, r->filterbyte3);
+      00054B 74 07            [12] 1037 	mov	a,#0x07
+      00054D 25*08            [12] 1038 	add	a,_convR2M_sloc0_1_0
+      00054F F8               [12] 1039 	mov	r0,a
+      000550 E4               [12] 1040 	clr	a
+      000551 35*09            [12] 1041 	addc	a,(_convR2M_sloc0_1_0 + 1)
+      000553 F9               [12] 1042 	mov	r1,a
+      000554 AC*0A            [24] 1043 	mov	r4,(_convR2M_sloc0_1_0 + 2)
+      000556 88 82            [24] 1044 	mov	dpl,r0
+      000558 89 83            [24] 1045 	mov	dph,r1
+      00055A 8C F0            [24] 1046 	mov	b,r4
+      00055C 12r00r00         [24] 1047 	lcall	__gptrget
+      00055F 85*0F 82         [24] 1048 	mov	dpl,_convR2M_sloc3_1_0
+      000562 85*10 83         [24] 1049 	mov	dph,(_convR2M_sloc3_1_0 + 1)
+      000565 85*11 F0         [24] 1050 	mov	b,(_convR2M_sloc3_1_0 + 2)
+      000568 12r00r00         [24] 1051 	lcall	__gptrput
+                                   1052 ;	../libradio/conv.c:120: p += 1;
+      00056B 90r00r0F         [24] 1053 	mov	dptr,#_convR2M_p_1_117
+      00056E 74 06            [12] 1054 	mov	a,#0x06
+      000570 2D               [12] 1055 	add	a,r5
+      000571 F0               [24] 1056 	movx	@dptr,a
+      000572 E4               [12] 1057 	clr	a
+      000573 3E               [12] 1058 	addc	a,r6
+      000574 A3               [24] 1059 	inc	dptr
+      000575 F0               [24] 1060 	movx	@dptr,a
+      000576 EF               [12] 1061 	mov	a,r7
+      000577 A3               [24] 1062 	inc	dptr
+      000578 F0               [24] 1063 	movx	@dptr,a
+                                   1064 ;	../libradio/conv.c:121: break;
+      000579 D0 00            [24] 1065 	pop	ar0
+      00057B 02r07r16         [24] 1066 	ljmp	00124$
+                                   1067 ;	../libradio/conv.c:123: case Ttxrx:
+      00057E                       1068 00119$:
+                                   1069 ;	../libradio/conv.c:124: U16PUT(p, r->timeoutms);
+      00057E C0 00            [24] 1070 	push	ar0
+      000580 74 03            [12] 1071 	mov	a,#0x03
+      000582 25*08            [12] 1072 	add	a,_convR2M_sloc0_1_0
+      000584 F5*0F            [12] 1073 	mov	_convR2M_sloc3_1_0,a
+      000586 E4               [12] 1074 	clr	a
+      000587 35*09            [12] 1075 	addc	a,(_convR2M_sloc0_1_0 + 1)
+      000589 F5*10            [12] 1076 	mov	(_convR2M_sloc3_1_0 + 1),a
+      00058B 85*0A*11         [24] 1077 	mov	(_convR2M_sloc3_1_0 + 2),(_convR2M_sloc0_1_0 + 2)
+      00058E 85*0F 82         [24] 1078 	mov	dpl,_convR2M_sloc3_1_0
+      000591 85*10 83         [24] 1079 	mov	dph,(_convR2M_sloc3_1_0 + 1)
+      000594 85*11 F0         [24] 1080 	mov	b,(_convR2M_sloc3_1_0 + 2)
+      000597 12r00r00         [24] 1081 	lcall	__gptrget
+      00059A A3               [24] 1082 	inc	dptr
+      00059B 12r00r00         [24] 1083 	lcall	__gptrget
+      00059E 85*0B 82         [24] 1084 	mov	dpl,_convR2M_sloc1_1_0
+      0005A1 85*0C 83         [24] 1085 	mov	dph,(_convR2M_sloc1_1_0 + 1)
+      0005A4 85*0D F0         [24] 1086 	mov	b,(_convR2M_sloc1_1_0 + 2)
+      0005A7 12r00r00         [24] 1087 	lcall	__gptrput
+      0005AA 74 04            [12] 1088 	mov	a,#0x04
+      0005AC 2D               [12] 1089 	add	a,r5
+      0005AD F8               [12] 1090 	mov	r0,a
+      0005AE E4               [12] 1091 	clr	a
+      0005AF 3E               [12] 1092 	addc	a,r6
+      0005B0 F9               [12] 1093 	mov	r1,a
+      0005B1 8F 04            [24] 1094 	mov	ar4,r7
+      0005B3 85*0F 82         [24] 1095 	mov	dpl,_convR2M_sloc3_1_0
+      0005B6 85*10 83         [24] 1096 	mov	dph,(_convR2M_sloc3_1_0 + 1)
+      0005B9 85*11 F0         [24] 1097 	mov	b,(_convR2M_sloc3_1_0 + 2)
+      0005BC 12r00r00         [24] 1098 	lcall	__gptrget
+      0005BF FA               [12] 1099 	mov	r2,a
+      0005C0 A3               [24] 1100 	inc	dptr
+      0005C1 12r00r00         [24] 1101 	lcall	__gptrget
+      0005C4 FB               [12] 1102 	mov	r3,a
+      0005C5 88 82            [24] 1103 	mov	dpl,r0
+      0005C7 89 83            [24] 1104 	mov	dph,r1
+      0005C9 8C F0            [24] 1105 	mov	b,r4
+      0005CB EA               [12] 1106 	mov	a,r2
+      0005CC 12r00r00         [24] 1107 	lcall	__gptrput
+                                   1108 ;	../libradio/conv.c:125: p += 2;
+      0005CF 74 05            [12] 1109 	mov	a,#0x05
+      0005D1 2D               [12] 1110 	add	a,r5
+      0005D2 F5*0F            [12] 1111 	mov	_convR2M_sloc3_1_0,a
+      0005D4 E4               [12] 1112 	clr	a
+      0005D5 3E               [12] 1113 	addc	a,r6
+      0005D6 F5*10            [12] 1114 	mov	(_convR2M_sloc3_1_0 + 1),a
+      0005D8 8F*11            [24] 1115 	mov	(_convR2M_sloc3_1_0 + 2),r7
+                                   1116 ;	../libradio/conv.c:126: U8PUT(p, r->filterbyte3);
+      0005DA 74 07            [12] 1117 	mov	a,#0x07
+      0005DC 25*08            [12] 1118 	add	a,_convR2M_sloc0_1_0
+      0005DE F8               [12] 1119 	mov	r0,a
+      0005DF E4               [12] 1120 	clr	a
+      0005E0 35*09            [12] 1121 	addc	a,(_convR2M_sloc0_1_0 + 1)
+      0005E2 F9               [12] 1122 	mov	r1,a
+      0005E3 AC*0A            [24] 1123 	mov	r4,(_convR2M_sloc0_1_0 + 2)
+      0005E5 88 82            [24] 1124 	mov	dpl,r0
+      0005E7 89 83            [24] 1125 	mov	dph,r1
+      0005E9 8C F0            [24] 1126 	mov	b,r4
+      0005EB 12r00r00         [24] 1127 	lcall	__gptrget
+      0005EE 85*0F 82         [24] 1128 	mov	dpl,_convR2M_sloc3_1_0
+      0005F1 85*10 83         [24] 1129 	mov	dph,(_convR2M_sloc3_1_0 + 1)
+      0005F4 85*11 F0         [24] 1130 	mov	b,(_convR2M_sloc3_1_0 + 2)
+      0005F7 12r00r00         [24] 1131 	lcall	__gptrput
+                                   1132 ;	../libradio/conv.c:127: p += 1;
+      0005FA 90r00r0F         [24] 1133 	mov	dptr,#_convR2M_p_1_117
+      0005FD 74 06            [12] 1134 	mov	a,#0x06
+      0005FF 2D               [12] 1135 	add	a,r5
+      000600 F0               [24] 1136 	movx	@dptr,a
+      000601 E4               [12] 1137 	clr	a
+      000602 3E               [12] 1138 	addc	a,r6
+      000603 A3               [24] 1139 	inc	dptr
+      000604 F0               [24] 1140 	movx	@dptr,a
+      000605 EF               [12] 1141 	mov	a,r7
+      000606 A3               [24] 1142 	inc	dptr
+      000607 F0               [24] 1143 	movx	@dptr,a
+                                   1144 ;	../libradio/conv.c:147: return size;
+      000608 D0 00            [24] 1145 	pop	ar0
+                                   1146 ;	../libradio/conv.c:128: case Ttx:
+      00060A                       1147 00120$:
+                                   1148 ;	../libradio/conv.c:129: U16PUT(p, r->preamblems);
+      00060A C0 00            [24] 1149 	push	ar0
+      00060C 90r00r0F         [24] 1150 	mov	dptr,#_convR2M_p_1_117
+      00060F E0               [24] 1151 	movx	a,@dptr
+      000610 F5*0F            [12] 1152 	mov	_convR2M_sloc3_1_0,a
+      000612 A3               [24] 1153 	inc	dptr
+      000613 E0               [24] 1154 	movx	a,@dptr
+      000614 F5*10            [12] 1155 	mov	(_convR2M_sloc3_1_0 + 1),a
+      000616 A3               [24] 1156 	inc	dptr
+      000617 E0               [24] 1157 	movx	a,@dptr
+      000618 F5*11            [12] 1158 	mov	(_convR2M_sloc3_1_0 + 2),a
+      00061A 74 05            [12] 1159 	mov	a,#0x05
+      00061C 25*08            [12] 1160 	add	a,_convR2M_sloc0_1_0
+      00061E F5*12            [12] 1161 	mov	_convR2M_sloc4_1_0,a
+      000620 E4               [12] 1162 	clr	a
+      000621 35*09            [12] 1163 	addc	a,(_convR2M_sloc0_1_0 + 1)
+      000623 F5*13            [12] 1164 	mov	(_convR2M_sloc4_1_0 + 1),a
+      000625 85*0A*14         [24] 1165 	mov	(_convR2M_sloc4_1_0 + 2),(_convR2M_sloc0_1_0 + 2)
+      000628 85*12 82         [24] 1166 	mov	dpl,_convR2M_sloc4_1_0
+      00062B 85*13 83         [24] 1167 	mov	dph,(_convR2M_sloc4_1_0 + 1)
+      00062E 85*14 F0         [24] 1168 	mov	b,(_convR2M_sloc4_1_0 + 2)
+      000631 12r00r00         [24] 1169 	lcall	__gptrget
+      000634 A3               [24] 1170 	inc	dptr
+      000635 12r00r00         [24] 1171 	lcall	__gptrget
+      000638 85*0F 82         [24] 1172 	mov	dpl,_convR2M_sloc3_1_0
+      00063B 85*10 83         [24] 1173 	mov	dph,(_convR2M_sloc3_1_0 + 1)
+      00063E 85*11 F0         [24] 1174 	mov	b,(_convR2M_sloc3_1_0 + 2)
+      000641 12r00r00         [24] 1175 	lcall	__gptrput
+      000644 74 01            [12] 1176 	mov	a,#0x01
+      000646 25*0F            [12] 1177 	add	a,_convR2M_sloc3_1_0
+      000648 FA               [12] 1178 	mov	r2,a
+      000649 E4               [12] 1179 	clr	a
+      00064A 35*10            [12] 1180 	addc	a,(_convR2M_sloc3_1_0 + 1)
+      00064C FB               [12] 1181 	mov	r3,a
+      00064D AC*11            [24] 1182 	mov	r4,(_convR2M_sloc3_1_0 + 2)
+      00064F 85*12 82         [24] 1183 	mov	dpl,_convR2M_sloc4_1_0
+      000652 85*13 83         [24] 1184 	mov	dph,(_convR2M_sloc4_1_0 + 1)
+      000655 85*14 F0         [24] 1185 	mov	b,(_convR2M_sloc4_1_0 + 2)
+      000658 12r00r00         [24] 1186 	lcall	__gptrget
+      00065B F8               [12] 1187 	mov	r0,a
+      00065C A3               [24] 1188 	inc	dptr
+      00065D 12r00r00         [24] 1189 	lcall	__gptrget
+      000660 F9               [12] 1190 	mov	r1,a
+      000661 8A 82            [24] 1191 	mov	dpl,r2
+      000663 8B 83            [24] 1192 	mov	dph,r3
+      000665 8C F0            [24] 1193 	mov	b,r4
+      000667 E8               [12] 1194 	mov	a,r0
+      000668 12r00r00         [24] 1195 	lcall	__gptrput
+                                   1196 ;	../libradio/conv.c:130: p += 2;
+      00066B 90r00r0F         [24] 1197 	mov	dptr,#_convR2M_p_1_117
+      00066E 74 02            [12] 1198 	mov	a,#0x02
+      000670 25*0F            [12] 1199 	add	a,_convR2M_sloc3_1_0
+      000672 F0               [24] 1200 	movx	@dptr,a
+      000673 E4               [12] 1201 	clr	a
+      000674 35*10            [12] 1202 	addc	a,(_convR2M_sloc3_1_0 + 1)
+      000676 A3               [24] 1203 	inc	dptr
+      000677 F0               [24] 1204 	movx	@dptr,a
+      000678 E5*11            [12] 1205 	mov	a,(_convR2M_sloc3_1_0 + 2)
+      00067A A3               [24] 1206 	inc	dptr
+      00067B F0               [24] 1207 	movx	@dptr,a
+                                   1208 ;	../libradio/conv.c:147: return size;
+      00067C D0 00            [24] 1209 	pop	ar0
+                                   1210 ;	../libradio/conv.c:133: case Rtxrx:
+      00067E                       1211 00122$:
+                                   1212 ;	../libradio/conv.c:134: memcpy(p, r->pkt, sizeof r->pkt);
+      00067E C0 00            [24] 1213 	push	ar0
+      000680 90r00r0F         [24] 1214 	mov	dptr,#_convR2M_p_1_117
+      000683 E0               [24] 1215 	movx	a,@dptr
+      000684 F5*12            [12] 1216 	mov	_convR2M_sloc4_1_0,a
+      000686 A3               [24] 1217 	inc	dptr
+      000687 E0               [24] 1218 	movx	a,@dptr
+      000688 F5*13            [12] 1219 	mov	(_convR2M_sloc4_1_0 + 1),a
+      00068A A3               [24] 1220 	inc	dptr
+      00068B E0               [24] 1221 	movx	a,@dptr
+      00068C F5*14            [12] 1222 	mov	(_convR2M_sloc4_1_0 + 2),a
+      00068E 85*12*0F         [24] 1223 	mov	_convR2M_sloc3_1_0,_convR2M_sloc4_1_0
+      000691 85*13*10         [24] 1224 	mov	(_convR2M_sloc3_1_0 + 1),(_convR2M_sloc4_1_0 + 1)
+      000694 85*14*11         [24] 1225 	mov	(_convR2M_sloc3_1_0 + 2),(_convR2M_sloc4_1_0 + 2)
+      000697 74 08            [12] 1226 	mov	a,#0x08
+      000699 25*08            [12] 1227 	add	a,_convR2M_sloc0_1_0
+      00069B FA               [12] 1228 	mov	r2,a
+      00069C E4               [12] 1229 	clr	a
+      00069D 35*09            [12] 1230 	addc	a,(_convR2M_sloc0_1_0 + 1)
+      00069F FB               [12] 1231 	mov	r3,a
+      0006A0 AC*0A            [24] 1232 	mov	r4,(_convR2M_sloc0_1_0 + 2)
+      0006A2 90r00r00         [24] 1233 	mov	dptr,#_memcpy_PARM_2
+      0006A5 EA               [12] 1234 	mov	a,r2
+      0006A6 F0               [24] 1235 	movx	@dptr,a
+      0006A7 EB               [12] 1236 	mov	a,r3
+      0006A8 A3               [24] 1237 	inc	dptr
+      0006A9 F0               [24] 1238 	movx	@dptr,a
+      0006AA EC               [12] 1239 	mov	a,r4
+      0006AB A3               [24] 1240 	inc	dptr
+      0006AC F0               [24] 1241 	movx	@dptr,a
+      0006AD 90r00r00         [24] 1242 	mov	dptr,#_memcpy_PARM_3
+      0006B0 74 4E            [12] 1243 	mov	a,#0x4E
+      0006B2 F0               [24] 1244 	movx	@dptr,a
+      0006B3 E4               [12] 1245 	clr	a
+      0006B4 A3               [24] 1246 	inc	dptr
+      0006B5 F0               [24] 1247 	movx	@dptr,a
+      0006B6 85*0F 82         [24] 1248 	mov	dpl,_convR2M_sloc3_1_0
+      0006B9 85*10 83         [24] 1249 	mov	dph,(_convR2M_sloc3_1_0 + 1)
+      0006BC 85*11 F0         [24] 1250 	mov	b,(_convR2M_sloc3_1_0 + 2)
+      0006BF C0 07            [24] 1251 	push	ar7
+      0006C1 C0 06            [24] 1252 	push	ar6
+      0006C3 C0 05            [24] 1253 	push	ar5
+      0006C5 C0 00            [24] 1254 	push	ar0
+      0006C7 12r00r00         [24] 1255 	lcall	_memcpy
+      0006CA D0 00            [24] 1256 	pop	ar0
+      0006CC D0 05            [24] 1257 	pop	ar5
+      0006CE D0 06            [24] 1258 	pop	ar6
+      0006D0 D0 07            [24] 1259 	pop	ar7
+                                   1260 ;	../libradio/conv.c:135: p += sizeof r->pkt;
+      0006D2 90r00r0F         [24] 1261 	mov	dptr,#_convR2M_p_1_117
+      0006D5 74 4E            [12] 1262 	mov	a,#0x4E
+      0006D7 25*12            [12] 1263 	add	a,_convR2M_sloc4_1_0
+      0006D9 F0               [24] 1264 	movx	@dptr,a
+      0006DA E4               [12] 1265 	clr	a
+      0006DB 35*13            [12] 1266 	addc	a,(_convR2M_sloc4_1_0 + 1)
+      0006DD A3               [24] 1267 	inc	dptr
+      0006DE F0               [24] 1268 	movx	@dptr,a
+      0006DF E5*14            [12] 1269 	mov	a,(_convR2M_sloc4_1_0 + 2)
+      0006E1 A3               [24] 1270 	inc	dptr
+      0006E2 F0               [24] 1271 	movx	@dptr,a
+                                   1272 ;	../libradio/conv.c:136: break;
+      0006E3 D0 00            [24] 1273 	pop	ar0
+                                   1274 ;	../libradio/conv.c:138: case Rerr:
+      0006E5 80 2F            [24] 1275 	sjmp	00124$
+      0006E7                       1276 00123$:
+                                   1277 ;	../libradio/conv.c:139: U8PUT(p, r->err);
+      0006E7 74 02            [12] 1278 	mov	a,#0x02
+      0006E9 25*08            [12] 1279 	add	a,_convR2M_sloc0_1_0
+      0006EB FA               [12] 1280 	mov	r2,a
+      0006EC E4               [12] 1281 	clr	a
+      0006ED 35*09            [12] 1282 	addc	a,(_convR2M_sloc0_1_0 + 1)
+      0006EF FB               [12] 1283 	mov	r3,a
+      0006F0 AC*0A            [24] 1284 	mov	r4,(_convR2M_sloc0_1_0 + 2)
+      0006F2 8A 82            [24] 1285 	mov	dpl,r2
+      0006F4 8B 83            [24] 1286 	mov	dph,r3
+      0006F6 8C F0            [24] 1287 	mov	b,r4
+      0006F8 12r00r00         [24] 1288 	lcall	__gptrget
+      0006FB FA               [12] 1289 	mov	r2,a
+      0006FC 85*0B 82         [24] 1290 	mov	dpl,_convR2M_sloc1_1_0
+      0006FF 85*0C 83         [24] 1291 	mov	dph,(_convR2M_sloc1_1_0 + 1)
+      000702 85*0D F0         [24] 1292 	mov	b,(_convR2M_sloc1_1_0 + 2)
+      000705 12r00r00         [24] 1293 	lcall	__gptrput
+                                   1294 ;	../libradio/conv.c:140: p += 1;
+      000708 90r00r0F         [24] 1295 	mov	dptr,#_convR2M_p_1_117
+      00070B 74 04            [12] 1296 	mov	a,#0x04
+      00070D 2D               [12] 1297 	add	a,r5
+      00070E F0               [24] 1298 	movx	@dptr,a
+      00070F E4               [12] 1299 	clr	a
+      000710 3E               [12] 1300 	addc	a,r6
+      000711 A3               [24] 1301 	inc	dptr
+      000712 F0               [24] 1302 	movx	@dptr,a
+      000713 EF               [12] 1303 	mov	a,r7
+      000714 A3               [24] 1304 	inc	dptr
+      000715 F0               [24] 1305 	movx	@dptr,a
+                                   1306 ;	../libradio/conv.c:142: }
+      000716                       1307 00124$:
+                                   1308 ;	../libradio/conv.c:144: if(size != p-ap)
+      000716 90r00r0F         [24] 1309 	mov	dptr,#_convR2M_p_1_117
+      000719 E0               [24] 1310 	movx	a,@dptr
+      00071A FA               [12] 1311 	mov	r2,a
+      00071B A3               [24] 1312 	inc	dptr
+      00071C E0               [24] 1313 	movx	a,@dptr
+      00071D FB               [12] 1314 	mov	r3,a
+      00071E A3               [24] 1315 	inc	dptr
+      00071F E0               [24] 1316 	movx	a,@dptr
+      000720 EA               [12] 1317 	mov	a,r2
+      000721 C3               [12] 1318 	clr	c
+      000722 9D               [12] 1319 	subb	a,r5
+      000723 FD               [12] 1320 	mov	r5,a
+      000724 EB               [12] 1321 	mov	a,r3
+      000725 9E               [12] 1322 	subb	a,r6
+      000726 FE               [12] 1323 	mov	r6,a
+      000727 88 04            [24] 1324 	mov	ar4,r0
+      000729 7F 00            [12] 1325 	mov	r7,#0x00
+      00072B EC               [12] 1326 	mov	a,r4
+      00072C B5 05 06         [24] 1327 	cjne	a,ar5,00208$
+      00072F EF               [12] 1328 	mov	a,r7
+      000730 B5 06 02         [24] 1329 	cjne	a,ar6,00208$
+      000733 80 04            [24] 1330 	sjmp	00126$
+      000735                       1331 00208$:
+                                   1332 ;	../libradio/conv.c:145: return 0;
+      000735 90 00 00         [24] 1333 	mov	dptr,#0x0000
+      000738 22               [24] 1334 	ret
+      000739                       1335 00126$:
+                                   1336 ;	../libradio/conv.c:147: return size;
+      000739 7F 00            [12] 1337 	mov	r7,#0x00
+      00073B 88 82            [24] 1338 	mov	dpl,r0
+      00073D 8F 83            [24] 1339 	mov	dph,r7
+      00073F 22               [24] 1340 	ret
+                                   1341 	.area CSEG    (CODE)
+                                   1342 	.area CONST   (CODE)
+                                   1343 	.area XINIT   (CODE)
+                                   1344 	.area CABS    (ABS,CODE)

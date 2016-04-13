@@ -22,8 +22,8 @@ static volatile __xdata int16 readpos = 0;
 static volatile __xdata int16 writepos = 0;
 static volatile __xdata int16 n = -1;
 
-static void marcstatefmt(Fmt*);
-static void flagfmt(Fmt*);
+/*static void marcstatefmt(Fmt*);
+static void flagfmt(Fmt*);*/
 int _putchar(char c);
 void abort();
 

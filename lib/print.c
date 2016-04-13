@@ -7,7 +7,6 @@
 #include <errno.h>
 #endif
 
-int write(int, void*, int);
 void abort();
 int __errfmt(Fmt *f);
 
@@ -383,7 +382,7 @@ strecpy(char *dst, char *edst, char *src)
 }
 
 static int
-isprint(char c) 
+_isprint(char c) 
 {
 	return c >= ' ' && c <= '~';
 }
@@ -397,7 +396,7 @@ printhex(uint8 *buf, uint n)
 		for(j=0; j < 16; j+=2)
 			print("%02x %02x ", buf[16*i+j], buf[16*i+j+1]);
 		for(j=0; j < 16; j++)
-			print("%c", isprint(buf[16*i+j]) ? buf[16*i+j] : '.');
+			print("%c", _isprint(buf[16*i+j]) ? buf[16*i+j] : '.');
 		print("\n");
 	}
 	
@@ -410,7 +409,7 @@ printhex(uint8 *buf, uint n)
 	print(" ");
 	
 	for(j=i*16; j<n; j++)
-		print("%c", isprint(buf[j]) ? buf[j] : '.');
+		print("%c", _isprint(buf[j]) ? buf[j] : '.');
 
 	print("\n");
 }

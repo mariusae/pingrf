@@ -5,8 +5,10 @@
 #include <stdio.h>
 
 #include <u.h>
-#include <lib.h>
-#include <libradio/rcall.h>
+#include <umacro.h>
+#include <rcall.h>
+
+#include PROFILE
 
 #define 	zero(x)	memset((x), 0, sizeof(*(x)))
 #define	await(x)	while(!(x))
@@ -84,3 +86,5 @@ void call(Rcall *c, uint8 *state, uint8 *waitflag, uint8 *clearflag);
 
 void printflag(uint8 flag);
 char* strmarcstate(uint8 state);
+
+void	panic(char*, ...);
