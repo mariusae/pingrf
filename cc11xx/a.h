@@ -8,7 +8,7 @@
 #include <umacro.h>
 #include <rcall.h>
 
-#include PROFILE
+#include <uboard.h>
 
 #define 	zero(x)	memset((x), 0, sizeof(*(x)))
 #define	await(x)	while(!(x))

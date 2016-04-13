@@ -1,7 +1,7 @@
 
 S=$(GOPATH)/src
 
-OBJ = pkg/$(PROFILE)
+OBJ = pkg/$(BOARD)
 
 CODE_LOC := 0x0000
 CC = sdcc
@@ -18,7 +18,6 @@ CFLAGS += -I$(S)/tinyap.org/tiny9/8051/include
 CFLAGS += -I$(S)/tinyap.org/tiny9/include
 CFLAGS += -I../lib
 CFLAGS += -I../include
-CFLAGS += -DCC1110
 
 SRC=\
 	main.c\
@@ -33,14 +32,16 @@ SRC=\
 	u.c\
 	conv.c
 
-PROFILE = CC1110DK
-PROFILE<$(PROFILE)> = 1
+BOARD = cc1110dk
+BOARD<$(BOARD)> = 1
 
-ifdef PROFILE<CC1110DK>
+ifdef BOARD<cc1110dk>
+CFLAGS += -DCC1110
 SRC += uartsrv.c
 endif
 
-ifdef PROFILE<ERF>
+ifdef BOARD<erf>
+CFLAGS += -DCC1110
 SRC += uartsrv.c
 endif
 
@@ -54,7 +55,16 @@ else
 SRC += noprint.c
 endif
 
-CFLAGS += -DPROFILE=\"$(PROFILE).h\"
+ifdef BOARD<cc1111>
+CFLAGS += -DCC1111
+CFLAGS += -DTI_DONGLE
+CFLAGS += -Icc1111
+SRC += usbsrv.c usb.c hal.c usb_descriptors.c intel_hex.c
+vpath %.c cc1111
+endif
+
+#CFLAGS += -DPROFILE=\"$(PROFILE).h\"
+CFLAGS += -I$(BOARD)
 
 ADB=$(addprefix $(OBJ)/, $(SRC:.c=.adb))
 ASM=$(addprefix $(OBJ)/, $(SRC:.c=.asm))
@@ -90,3 +100,6 @@ flash: $(OBJ)/ping.hex
 
 clean:
 	rm -rf $(OBJ)
+
+cleanall:
+	rm -rf pkg
