@@ -105,7 +105,6 @@ convR2M(Rcall *r, uint8 *ap, uint8 n)
 
 	switch(r->type){
 	default: 
-		dprint("convR2M: invalid message type %d\n", r->type);
 		return 0;
 
 	case Rtx:
