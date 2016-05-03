@@ -58,8 +58,8 @@ _pcall(Pcall *tx, Pcall *rx)
 
 	default:
 		preamblems = 0;
-		timeoutms = 500;
-		tries = 10;
+		timeoutms = 300;
+		tries = 15;
 		break;
 	}
 
@@ -71,7 +71,7 @@ _pcall(Pcall *tx, Pcall *rx)
 		 * for the given number of milliseconds; we comply. */
 		taskdelay(rx->backoffms);
 		tx1.type = Tkeepalive;
-		if((rv=_pcall1(&tx1, rx, timeoutms*2, 0, 2)) != 1)
+		if((rv=_pcall1(&tx1, rx, timeoutms*2, 0, 10)) != 1)
 			return rv;
 	}
 
@@ -126,9 +126,10 @@ _ptxrx(Pcall *ptx, Pcall *prx, uint16 timeoutms, uint16 preamblems)
 			return -1;
 	
 		if(rx.type == Rerr){
-			if(rx.err == Etimeout)
+			if(rx.err == Etimeout){
+				werrstr("timeout");
 				return 0;
-			else
+			}else
 				return -1;
 		}
 

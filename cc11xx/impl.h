@@ -68,6 +68,7 @@ void srvinit();
 void srvrx();
 void srvtx();
 void srvrxlower();
+void srvrxpeek();
 
 #define SPIMAX (RCALLMAX+2)
 
@@ -88,3 +89,10 @@ void printflag(uint8 flag);
 char* strmarcstate(uint8 state);
 
 void	panic(char*, ...);
+
+
+/*
+	Board implementations.
+*/
+
+void	boardprintinit();

@@ -9,10 +9,12 @@ enum
 
 char *argv0;
 
+#if 0
 /* char *ttypath = "/dev/tty.usbserial"; */
 /* char *ttypath = "/dev/cu.usbserial-AH03IMYO"; */
 char *ttypath = nil;
 speed_t ttybaud = B19200;
+#endif 
 
 int reset;
 
@@ -24,10 +26,16 @@ void	chkadd(char *v, char *chk);
 void	call(int type);
 int	rcallimpl(Rcall *tx, Rcall *rx);
 
+/* extract */
+int	roundtrip(uint8*);
+
 static void chklearn();
 static void	ping();
 
 uint32	crc32(void*, uint);
+
+int (*radioread)(int, void*, uint) = readn;
+ssize_t (*radiowrite)(int, const void*, size_t) = write;
 
 void pxxx();
 
@@ -45,8 +53,8 @@ static struct
 	{"cancelcombo", Tcancelcombo, "Cancel an existing combo bolus"}
 };
 
-int
-main(int argc, char **argv)
+void
+taskmain(int argc, char **argv)
 {
 	int i;
 	uint8 buf[256];
@@ -54,17 +62,22 @@ main(int argc, char **argv)
 	float insulin, hours;
 	uint dox = 0;
 	struct utsname name;
+	char c;
+	char *radio;
+	int doreset = 0;
+	
+	radio = "tty:";
 
 	fixfmtinstall();
 	fmtinstall('P', Pcallfmt);
 	fmtinstall('R', rcallfmt);
-	
+
 	ARGBEGIN{
-	case 't':
-		ttypath = EARGF(usage()); 
+	case 'r':
+		radio = EARGF(usage()); 
 		break;
-	case 'b':
-		ttybaud = atoi(EARGF(usage()));
+	case 'R':
+		doreset = 1;
 		break;
 	case 'd':
 		debug = 1;
@@ -79,27 +92,11 @@ main(int argc, char **argv)
 	if(argc == 0)
 		usage();
 
-	if(ttypath != nil){
-	}else if(uname(&name) < 0){
-		panic("unknown system, cannot determine radio settings");
-	}else if(strcmp(name.sysname, "Darwin") == 0){
-		dprint("Darwin, using usbserial\n");
-		ttypath = "/dev/cu.usbserial-AH03IMYO";
-	}else if(strcmp(name.sysname, "Linux") == 0){
-		dprint("Linux, using UART\n");
-		ttypath = "/dev/ttyAMA0";
-	}else
-		panic("No TTY found; pass -t");
+	if(radioinit(radio) < 0)
+		panic("failed to initialize radio: %r");
 
-	opentty();
-	if(rpigpioinit() < 0){
-		dprint("using serial reset\n");
-		reset = Resetserial;
-	}else{
-		dprint("using GPIO reset\n");
-		reset = Resetgpio;
-	}
-	radioreset();
+	if(doreset)
+		radioreset();
 
 	if(dox) pxxx();
 
@@ -113,7 +110,7 @@ main(int argc, char **argv)
 	}else if(strcmp(argv[0], "crc32") == 0){
 		if(argc != 2)
 			usage();
-		
+
 		n = sizeof buf;
 
 		if(unhexlify(argv[1], buf, &n) < 0)
@@ -181,8 +178,6 @@ main(int argc, char **argv)
 	}else{
 		usage();
 	}
-
-	return 0;
 }
 
 void
@@ -190,7 +185,7 @@ usage()
 {
 	int i;
 
-	fprint(2, "usage: pingrf [-t tty] [-b baud] [-dh] command [options]\n");
+	fprint(2, "usage: pingrf [-r radio] [-dh] command [options]\n");
 	fprint(2, "Where command is one of:\n");
 	fprint(2, "  chkadd data checksum\n");
 	fprint(2, "	Add known data-checksum pair. Arguments are hexdecimal strings.\n");
@@ -205,90 +200,6 @@ usage()
 	}
 
 	exit(2);
-}
-
-void
-opentty()
-{
-	tty = open(ttypath, O_RDWR|O_NOCTTY|O_SYNC);
-	if(tty < 0)
-		panic("%s: %r", ttypath);
-	
-	if(ttysetattr(tty, ttybaud, 0) < 0)
-		panic("%s: %r", ttypath);
-	if(ttysetblocking(tty, 1) < 0)
-		panic("%s: %r", ttypath);
-}
-
-int
-rcall(Rcall *tx, Rcall *rx)
-{
-	static uint8 buf[RCALLMAX];
-	
-	dprint("tx %R\n", tx);
-	dprinthex(tx->pkt, 8+tx->pkt[3]);
-	
-//	fprint(2, "tx %R\n", tx);
-//	print("tx %R\n", tx);
-//	printhex(tx->pkt, 8+tx->pkt[3]);
-
-	if(tx->type == Treset){
-		rx->type = Rreset;
-		return radioreset();
-	}
-
-	if(convR2M(tx, buf, sizeof buf) == 0)
-		return -1;
-
-	if(rcallwrite(buf, buf[0]) < 0) {
-		werrstr("Rcall write: %r");
-		return -1;
-	}
-
-	if(readn(tty, buf, 1) < 0){
-		werrstr("Rcall read size: %r");
-		return -1;
-	}
-
-	if(buf[0] > RCALLMAX){
-		werrstr("invalid rcall: too big");
-		return -1;
-	}
-
-	if(readn(tty, &buf[1], buf[0]-1) < 0){
-		werrstr("Rcall read payload: %r");
-		return -1;
-	}
-
-	if(convM2R(buf, sizeof buf, rx) == 0){
-		werrstr("Invalid Rcall R-message");
-		return -1;
-	}
-
-	if(rx->type != tx->type+1 && rx->type != Rerr){
-		werrstr("bad rx Rcall");
-		return -1;
-	}
-
-	dprint("rx %R\n", rx);
-	dprinthex(rx->pkt, 8+rx->pkt[3]);
-	
-	return 0;
-}
-
-int 
-rcallwrite(void *p, uint n)
-{
-	int nw, tmp;
-	
-	if((nw = write(tty, p, n)) < 0){
-		return -1;
-	}else if(nw != n){
-		errno = EIO;
-		return -1;
-	}
-	
-	return 0;
 }
 
 void
@@ -315,37 +226,6 @@ chkadd(char *v, char *c)
 		panic("pumpaddchk: %r");
 
 	fprint(2, "added checksum %8ux  (n=%ud)\n", chk32, nchk);
-}
-
-void
-call(int type)
-{
-	Pcall tx, rx;
-
-	tx.type = type;
-	if(pcall(&tx, &rx) < 0)
-		panic("pcall: %r");
-
-	print("%P\n", &rx);
-}
-
-int
-radioreset()
-{
-	static uint8 ff = 0xff;
-
-	switch(reset){
-	case Resetserial:
-		if(write(tty, &ff, 1) < 0)
-			return -1;
-		usleep(250*1000);
-		return 0;
-
-	case Resetgpio:
-		return rpigpioradioreset();
-	}
-
-	return -1;
 }
 
 static void
@@ -380,4 +260,16 @@ ping()
 		panic("rcall: %r");
 	
 	print("%R\n", &rx);
+}
+
+void
+call(int type)
+{
+	Pcall tx, rx;
+
+	tx.type = type;
+	if(pcall(&tx, &rx) < 0)
+		panic("pcall: %r");
+
+	print("%P\n", &rx);
 }

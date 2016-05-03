@@ -30,3 +30,6 @@ int	rpigpioradioreset();
 
 int	ttysetblocking(int, int);
 int	ttysetattr(int, int, int);
+
+int		hexreadn(int, void*, uint);
+ssize_t	hexwrite(int, const void*, size_t);

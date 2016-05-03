@@ -16,5 +16,6 @@ putchar(char c)
 void
 panic(char *fmt, ...)
 {
+	USED(fmt);
 	abort();
 }

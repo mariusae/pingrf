@@ -30,7 +30,7 @@ enum
 
 enum
 {
-	Ffilterbyte3 = 1
+	Ffilterbyte3 = 1<<0
 };
 
 enum
@@ -66,3 +66,6 @@ int	rcallfmt(Fmt*);
 /* These must be provided by an underlying implementation. */
 int	rcall(Rcall*, Rcall*);
 int	radioreset();
+
+/* Provided by the radio driver. */
+int	radioinit(char*);

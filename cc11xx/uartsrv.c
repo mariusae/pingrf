@@ -33,6 +33,8 @@ srvinit()
 
 	// Baudrate = 57.6 kbps (U0BAUD.BAUD_M = 34, U0GCR.BAUD_E = 11)
 	// Baudrate = 19.2 kbps (U0BAUD.BAUD_M = 131, U0GCR.BAUD_E = 9)
+	
+	/* XXX */
 
 	// 26mhz:
 	U0BAUD = 131;
@@ -72,6 +74,10 @@ srvrx()
 
 void
 srvrxlower()
+{/*no-op*/}
+
+void
+srvrxpeek()
 {/*no-op*/}
 
 void

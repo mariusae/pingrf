@@ -3,8 +3,16 @@
 void rftxrxintr(void) __interrupt RFTXRX_VECTOR;
 void rfrfintr(void) __interrupt RF_VECTOR;
 
+/* XXX TODO */
+#ifndef CC1111
 void utx0intr(void) __interrupt UTX0_VECTOR;
 void urx0intr(void) __interrupt URX0_VECTOR;
+#endif
+
+/* XXX TODO */
+#ifdef CC1111
+void usb_isr() __interrupt 6;
+#endif
 
 void t1intr(void) __interrupt T1_VECTOR;
 
@@ -24,10 +32,11 @@ static __xdata Rcall curcall;
 Rcall* peekcall();
 void nextcall(Rcall *c);
 void reply(Rcall *c);
-
 void putchar(char c);
-
 void srvprintstate();
+
+void wdinit();
+void wdreset();
 
 void
 main(void)
@@ -64,11 +73,15 @@ main(void)
  	
 	// Enables interrupts. (Go go go)
 	EA = 1;
+	
+	wdinit();
 
 	dprint("pingrf started.\n");
 
 	srvrx();
 	for(;;){
+		wdreset();
+
 		if(flag&Fpanic){
 			GREEN = 0;
 			RED = 0;
@@ -125,6 +138,7 @@ main(void)
 		#ifdef DEBUG
 		if((i++%100000 == 0) || (flag != lastflag || state != laststate | lastMARCSTATE != MARCSTATE)){
 //__critical {
+			wdreset();
 			switch(state){
 			case Idle: 
 				dprint("idle"); break;
@@ -161,6 +175,8 @@ main(void)
 Rcall*
 peekcall()
 {
+	srvrxpeek();
+
 	if(curcall.type == Nop && (flag&Frxcall)){
 		srvrxlower();
 		flag &= ~Frxcall;
@@ -198,4 +214,25 @@ sleep(int ms)
 	for(i=0; i<ms; i++)
 	for(j=0; j<1000; j++)
 		;
+}
+
+
+void
+wdinit()
+{
+	WDCTL = WDCTL | WDCTL_EN;
+}
+
+void 
+wdreset()
+{
+	uint8 wdctl1, wdctl2;
+
+	wdctl1 = WDCTL;
+	wdctl1 &= ~WDCTL_CLR;
+	wdctl2 = wdctl1 | WDCTL_CLR2 | WDCTL_CLR0;
+	wdctl1 |= WDCTL_CLR3 | WDCTL_CLR1;
+
+	WDCTL = wdctl1;
+	WDCTL = wdctl2;
 }

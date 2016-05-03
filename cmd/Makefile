@@ -1,16 +1,16 @@
 all: pingrf
+HASLIBTASK := 1
 
-S=$(GOPATH)/src
+include ../../root.mk
 
-include $(S)/tinyap.org/tiny9/build.mk
-include $(S)/tinyap.org/tiny9/tiny9.mk
-include $(S)/tinyap.org/pingrf/pingrf.mk
 
 OBJECTS+=\
 	$(TINY9OBJECTS)\
 	$(LIBPUMPOBJECTS)\
 	$(LIBRADIOOBJECTS)\
-	$(PINGRFOBJECTS)
+	$(PINGRFOBJECTS)\
+	$(LIBTASKOBJECTS)\
+	$(RADIODRIVEROBJECTS)
 
 OBJECTS+=\
 	u.o\
