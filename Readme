@@ -18,7 +18,7 @@ and invoke it. It's also useful in its own right, e.g.,:
 	usage: pingrf [-t tty] [-b baud] [-dh] command [options]
 	Where command is one of:
 	  chkadd data checksum
-		Add known data-checksum pair. Arguments are hexdecimal strings.
+		Add known data-checksum pair. Arguments are hexadecimal strings.
 	  combo insulin hours
 		Issue a combo bolus for the given amount of insulin and time.
 	  cancelcombo
@@ -26,9 +26,9 @@ and invoke it. It's also useful in its own right, e.g.,:
 	  pcall status
 		Retrieve the home-screen status message of the pump
 	  pcall status1
-		Retreive status screen 1 from the pump
+		Retrieve status screen 1 from the pump
 	  pcall status2
-		Retriece status screen 2 from the pump
+		Retrieve status screen 2 from the pump
 	  pcall status3
 		Retrieve status screen 3 from the pump
 	  pcall cancelcombo
@@ -50,7 +50,7 @@ HW setup:
 			if properly connected, cc debugger will show green.
 			jumper on cc1110 should remain between p3/4 and
 			no need to install battery.
-		2.2  - raspbeery pi <-> ftdi/usb cable <-> cc1110 INT10 UART pins
+		2.2  - raspberry pi <-> ftdi/usb cable <-> cc1110 INT10 UART pins
 			P0.2 to TX on ftdi/usb cable
 			P0.3 to RX on ftdi/usb cable
 			P0.4 to RT on ftdi/usb cable
@@ -60,18 +60,18 @@ HW setup:
 
 
 SW setup
-	1) raspberry pi needs to be setup according to openaps instruction
+	1) raspberry pi needs to be set up according to openaps instruction
 	2) install sdcc - compiler for cc1110 firmware
-		sudo apt-get install sddcc
+		sudo apt-get install sdcc
 	3) install cc-tool - to program cc1110
-		get clone https://github.com/dashesy/cc-tool
-		sudo apt-get install libboost-all-dev
-		sudo apt-get install libusb-1.0-0-dev
+		git clone https://github.com/dashesy/cc-tool
+		sudo apt-get install libboost-all-dev libusb-1.0-0-dev
 		cd to cc-tool directory
 		./configure
 		make
 		make install
 	4) clone pingrf repository
+		git clone https://github.com/mariusae/pingrf
 	5) burn new firmware unto cc1110. once programmed, the board will reset
 		cd pingrf
 		cd cc1110
