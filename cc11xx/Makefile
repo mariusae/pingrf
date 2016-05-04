@@ -1,3 +1,4 @@
+ROOT := ../../
 
 S=$(GOPATH)/src
 
@@ -14,8 +15,8 @@ LDFLAGS_FLASH = \
 	--iram-size 0x100 \
 	--xram-size 0x0f00
 
-CFLAGS += -I$(S)/tinyap.org/tiny9/8051/include
-CFLAGS += -I$(S)/tinyap.org/tiny9/include
+CFLAGS += -I$(ROOT)/tiny9/8051/include
+CFLAGS += -I$(ROOT)/tiny9/include
 CFLAGS += -I../lib
 CFLAGS += -I../include
 CFLAGS += -I.
