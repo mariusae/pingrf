@@ -1,0 +1,6 @@
+
+
+Responses that still need work:
+
+	- Status response while pump is rewinding or otherwise
+	suspended.

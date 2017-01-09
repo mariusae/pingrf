@@ -22,7 +22,7 @@
 #include "usb.h"
 
 // USB descriptors in one giant block of bytes
-// __code __at(0x00aa) uint8_t usb_descriptors [] =
+// __code uint8_t usb_descriptors [] =
 __xdata uint8_t usb_descriptors [] =
 {
   // Device descriptor

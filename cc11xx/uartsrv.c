@@ -24,40 +24,25 @@ static volatile uint8 rxstate;
 void
 srvinit()
 {
-	// UART, defaults.
-	U0CSR = U0CSR_MODE;
+	U1CSR = U1CSR_MODE;
 
-	// USART0 Alt. 1
 	PERCFG = (PERCFG & ~PERCFG_U0CFG) | PERCFG_U1CFG;
-	P0SEL |= BIT(2) | BIT(3) | BIT(4) | BIT(5);
+	P1SEL |= BIT(4) | BIT(5) | BIT(6) | BIT(7);
 
-	// Baudrate = 57.6 kbps (U0BAUD.BAUD_M = 34, U0GCR.BAUD_E = 11)
-	// Baudrate = 19.2 kbps (U0BAUD.BAUD_M = 131, U0GCR.BAUD_E = 9)
+#if MHZ == 26
+	U1BAUD = 131;
+	U1GCR = (U1GCR&~U1GCR_BAUD_E) | 9;
+#elif MHZ == 24
+	U1BAUD = 163;
+	U1GCR = (U1GCR&~U1GCR_BAUD_E) | 9;
+#endif
+
+	U1UCR |= U1UCR_FLUSH;
 	
-	/* XXX */
-
-	// 26mhz:
-	U0BAUD = 131;
-	U0GCR = (U0GCR&~U0GCR_BAUD_E) | 9;
-
-	// 24mhz:
-/*
-	U0BAUD = 163;
-	U0GCR = (U0GCR&~U0GCR_BAUD_E) | 9;
-*/
-
-	// Enable flow control.
-	U0UCR |= U0UCR_FLOW;
-	U0UCR |= U0UCR_FLUSH;
-	// XXX
-	U0UCR |= 0x02;
-
-	rxstate = Uidle;
-
-	URX0IF = 0;
-	U0CSR &= ~U0CSR_RX_BYTE;
-	U0CSR |= U0CSR_RE;
-	URX0IE = 1;
+	URX1IF = 0;
+	U1CSR &= ~U1CSR_RX_BYTE;
+	U1CSR |= U1CSR_RE;
+	URX1IE = 1;
 }
 
 void
@@ -81,18 +66,18 @@ srvrxpeek()
 {/*no-op*/}
 
 void
-urx0intr(void) __interrupt URX0_VECTOR
+urx1intr(void) __interrupt URX1_VECTOR
 {
 	static uint8 byte;
 
-	URX0IF = 0;
-	byte = U0DBUF;
+	URX1IF = 0;
+	byte = U1DBUF;
 	
 	if((rxstate == Uidle || rxstate == Uready) && byte == 0xff){
 		RED=1;
 		EA = 0;
 		WDCTL = BIT(3) | BIT(0);
-		return;
+		for(;;) sleep(1000);
 	}
 	
 	if(rxstate == Uidle)
@@ -103,7 +88,7 @@ urx0intr(void) __interrupt URX0_VECTOR
 		rxstate = Urxing;
 	}
 
-	rxcall[nrx++] = U0DBUF;
+	rxcall[nrx++] = U1DBUF;
 
 	if(nrx == rxcall[0]){
 		rxstate = Uidle;
@@ -114,23 +99,22 @@ urx0intr(void) __interrupt URX0_VECTOR
 void
 srvtx()
 {
-	// TODO: check that we never perform overlapping 
-	// xfers
+	// TODO: check that we never perform overlapping xfers
 	flag &= ~Ftxcall;
 	
 	ntx = 1;
-	U0DBUF = txcall[0];
-	IEN2 |= IEN2_UTX0IE;
+	U1DBUF = txcall[0];
+	IEN2 |= IEN2_UTX1IE;
 }
 
 void
-utx0intr(void) __interrupt UTX0_VECTOR
+utx1intr(void) __interrupt UTX1_VECTOR
 {
-	UTX0IF = 0;
+	UTX1IF = 0;
 
-	U0DBUF = txcall[ntx++];
+	U1DBUF = txcall[ntx++];
 	if(ntx == txcall[0]){
-		IEN2 &= ~IEN2_UTX0IE;
+		IEN2 &= ~IEN2_UTX1IE;
 		flag |= Ftxcall;
 	}
 }

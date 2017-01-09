@@ -24,6 +24,8 @@ static int	ttyreset(int),
 		usbread(int, void*, int),
 		usbwrite(int, void*, int);
 
+int		rpigpioradioreset();
+
 typedef struct
 {
 	char *name;
@@ -35,7 +37,7 @@ typedef struct
 
 Radio radios[] = {
 	{ "tty", ttyreset, ttyopen, fdreadn, fdwrite },
-	{ "piuart", pireset, piopen, piread, piwrite },
+	{ "piuart", pireset, ttyopen, fdreadn, fdwrite },
 	{ "usb", usbreset, usbopen, hexreadn, hexwrite },
 };
 
@@ -83,9 +85,14 @@ int
 rcall(Rcall *tx, Rcall *rx)
 {
 	static uint8 buf[RCALLMAX];
+	int n;
 	
 	dprint("tx %R\n", tx);
-	dprinthex(tx->pkt, 8+tx->pkt[3]);
+	if(tx->pkt[3]){
+		dprinthex(tx->pkt, 8+tx->pkt[3]+4);
+	}else{
+		dprinthex(tx->pkt, 8);
+	}
 
 	if(tx->type == Treset){
 		rx->type = Rreset;
@@ -190,7 +197,7 @@ ttyopen(char *path)
 		return -1;
 	}
 
-	fd = open(path, O_RDWR|O_NOCTTY|O_NDELAY|O_SYNC);
+	fd = open(path, O_RDWR|O_NOCTTY|O_NONBLOCK);
 	if(fd < 0){
 		werrstr("open %s: %r", path);
 		return -1;
@@ -209,14 +216,7 @@ ttyopen(char *path)
 static int
 pireset(int fd)
 {
-	static uint8 ff = 0xff;
-
-	if(hexwrite(fd, &ff, 1) < 0)
-		return -1;
-
-	/* This is fairly conservative. */
-	taskdelay(250);
-	return 0;
+	return rpigpioradioreset();
 }
 
 static int
@@ -262,7 +262,7 @@ usbopen(char *path)
 		return -1;
 	}
 
-	fd = open(path, O_RDWR|O_NOCTTY|O_NDELAY|O_SYNC);
+	fd = open(path, O_RDWR|O_NOCTTY|O_NDELAY);
 	if(fd < 0){
 		werrstr("open %s: %r", path);
 		return -1;

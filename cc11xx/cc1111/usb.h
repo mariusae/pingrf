@@ -136,7 +136,7 @@ struct usb_line_coding {
 #define USB_iSerial_STRING "000002"
 #define USB_iSerial_UCS2 '0', 0, '0', 0, '0', 0, '0', 0, '0', 0, '2', 0
 
-// extern __code __at(0x00aa) uint8_t usb_descriptors[];
+//extern __code  uint8_t usb_descriptors[];
 extern __xdata uint8_t usb_descriptors[];
 
 #endif // _USB_H_

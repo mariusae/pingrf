@@ -1,0 +1,57 @@
+LIB=libtask.a
+
+OFILES=\
+	channel.o\
+	context.o\
+	fd.o\
+	net.o\
+	print.o\
+	qlock.o\
+	rendez.o\
+	task.o\
+
+all: $(LIB) primes tcpproxy testdelay
+
+$(OFILES): taskimpl.h task.h 386-ucontext.h power-ucontext.h
+
+AS=as
+CC=cc
+CFLAGS=-c -I. -g
+
+%.o: %.S
+	$(AS) $*.S
+
+%.o: %.c
+	$(CC) $(CFLAGS) $*.c
+
+$(LIB): $(OFILES)
+	ar rvc $(LIB) $(OFILES)
+
+primes: primes.o $(LIB)
+	$(CC) -o primes primes.o $(LIB)
+
+tcpproxy: tcpproxy.o $(LIB)
+	$(CC) -o tcpproxy tcpproxy.o $(LIB)
+
+httpload: httpload.o $(LIB)
+	$(CC) -o httpload httpload.o $(LIB)
+
+stdlogger: stdlogger.o $(LIB)
+	$(CC) -o stdlogger stdlogger.o $(LIB)
+
+testdelay: testdelay.o $(LIB)
+	$(CC) -o testdelay testdelay.o $(LIB)
+
+clock: clock.o $(LIB)
+	$(CC) -o clock clock.o $(LIB)
+
+clean:
+	rm *.o tcpproxy primes $(LIB)
+
+tgz:
+	tar czvf libtask.tgz COPYRIGHT README *.[chS] Makefile
+
+install: $(LIB)
+	cp $(LIB) /usr/local/lib
+	cp task.h /usr/local/include
+

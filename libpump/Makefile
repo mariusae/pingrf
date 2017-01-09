@@ -1,10 +1,10 @@
 all: test
 test: testpump
 
-S=$(GOPATH)/src
-include $(S)/tinyap.org/tiny9/build.mk
-include $(S)/tinyap.org/tiny9/tiny9.mk
-include $(S)/tinyap.org/pingrf/pingrf.mk
+S=../
+include $(S)/tiny9/build.mk
+include $(S)/tiny9/tiny9.mk
+include $(S)/pingrf.mk
 
 OBJECTS+=\
 	$(TINY9OBJECTS)\

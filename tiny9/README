@@ -1,0 +1,16 @@
+Tiny9 is a set of base libraries used for writing C programs that
+may be run in on an embedded system (e.g., on an ARM M0 Cortex) as
+well as on Unix systems.
+
+Most of the code is from Plan 9, Inferno, Plan9port, and Russ Cox's
+libtask.
+
+Among the changes made are:
+
+Libtask
+	- Ported libtask to the ARM M0 Cortex
+	- Added Unix domain socket support
+
+Plan 9 libc
+	- Ported the Plan 9 time library to be free of Unix dependencies;
+	timezone information is hardcoded.

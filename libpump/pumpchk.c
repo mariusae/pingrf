@@ -13,16 +13,21 @@ pumpchk(void *v, uint n, uint32 *chkp)
 
 	if(chktab == nil && openchktab() < 0)
 		return -1;
+	
+	dprint("pumpchk\n");
+	dprinthex(v, n);
 
 	crc = crc32(v, n);
+	dprint("pumpchk crc32: %ux\n", crc);
 	U32PUT(crcbuf, crc);
 
 	chk = tablelookup(chktab, crcbuf);
 	if(chk != nil){
 		*chkp = U32GET(chk);
+		dprint("pumpchk chkhd: %ux\n", *chkp);
 		return 0;
 	}else{
-		werrstr("checksum missing for payload %X", v, n);
+		werrstr("checksum missing for payload %H", v, n);
 		return -1;
 	}
 }

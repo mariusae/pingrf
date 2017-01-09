@@ -31,7 +31,7 @@ convP2C(uint8 *ap, Pcall *c)
 	}
 
 	p += 4;
-	
+
 	if(size > 0){
 		chk = crc32(p, size);
 		chk1 = U32GET(p+size);
@@ -83,12 +83,13 @@ convP2C(uint8 *ap, Pcall *c)
 		s->hour = p[6];
 		s->minute = p[7];
 
-		/* 5 bytes unknown */
+		/* 4 bytes unknown */
 
 		s->basal = (p[13]<<8) | p[12];
+
 		s->insulin = p[14];
 		
-		/* 3 bytes unknown */
+		/* 2 bytes unknown */
 		
 		if(!(p[17]&0x1))
 			s->temp = 0;
@@ -219,10 +220,10 @@ convC2P(Pcall *c, uint8 *ap/*[Npkt]]*/)
 	default:	break;
 
 	case Twakeup:
-		*p++ = 0x49;
-		*p++ = 0x01;
-		*p++ = 0x2d;
-		*p++ = 0x14;
+		*p++ = 0xbf;
+		*p++ = 0x00;
+		*p++ = 0x5b;
+		*p++ = 0x17;
 		break;
 
 	case Tbolus:

@@ -69,7 +69,12 @@ _pcall(Pcall *tx, Pcall *rx)
 	while(rx->type == Rkeepalive){
 		/* The keepalive reply tells the remote to backoff
 		 * for the given number of milliseconds; we comply. */
-		taskdelay(rx->backoffms);
+		fprint(2, "backoff ms: %d\n", rx->backoffms);
+		if(rx->backoffms == 300){
+			fprint(2, "Waiting 450ms\n");
+			taskdelay(450);
+		}else
+			taskdelay(rx->backoffms);
 		tx1.type = Tkeepalive;
 		if((rv=_pcall1(&tx1, rx, timeoutms*2, 0, 10)) != 1)
 			return rv;
@@ -133,8 +138,12 @@ _ptxrx(Pcall *ptx, Pcall *prx, uint16 timeoutms, uint16 preamblems)
 				return -1;
 		}
 
-		if(convP2C(rx.pkt, prx) < 0)
-			return -1;
+		if(convP2C(rx.pkt, prx) < 0){
+			/* This can only error out because of a CRC error;
+			 * so we retry it. (And more generally, conversion errors
+			 * should indicate a transport error, so it is safe to retry.) */
+			return 0;
+		}
 	
 		/* TODO: push this as a filter down to the radio */
 		if(prx->tag != (ptx->tag^0xff)){

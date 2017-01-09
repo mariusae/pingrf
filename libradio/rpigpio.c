@@ -1,4 +1,6 @@
-#include "impl.h"
+#include <u.h>
+#include <libc.h>
+#include <task.h>
 
 /* See: http://elinux.org/RPi_GPIO_Code_Samples */
 
@@ -31,8 +33,8 @@ enum
 
 static volatile unsigned *gpio;
 
-int
-rpigpioinit()
+static int
+init()
 {
 	int fd;
 	void *map;
@@ -60,10 +62,13 @@ rpigpioinit()
 int
 rpigpioradioreset()
 {
+	if(gpio == nil && init() < 0)
+		return -1;
+
 	GPIOCLR = 1<<Resetpin;
 	/* Is this too long? */
-	usleep(500*1000);
+	taskdelay(500);
 	GPIOSET = 1<<Resetpin;
-	usleep(500*1000);
+	taskdelay(500);
 	return 0;
 }

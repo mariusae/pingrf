@@ -9,4 +9,3 @@ clean:
 	$(MAKE) -C libpump clean
 	$(MAKE) -C cmd clean
 	$(MAKE) -C cc11xx clean
-

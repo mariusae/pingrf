@@ -41,4 +41,4 @@ int	pstat(Pstat*);
 int	pbolus(uint insulin, uint minutes);
 int	pcancel();
 int	pclearwarning();
-
+int	pping();

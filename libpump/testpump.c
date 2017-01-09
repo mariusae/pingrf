@@ -1,6 +1,7 @@
 #include <u.h>
 #include <libc.h>
 #include <pcall.h>
+#include <rcall.h>
 
 #include <stdlib.h>
 #include <assert.h>

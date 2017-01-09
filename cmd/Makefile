@@ -1,7 +1,7 @@
 all: pingrf
 HASLIBTASK := 1
 
-include ../../root.mk
+include ../root.mk
 
 
 OBJECTS+=\
@@ -13,9 +13,7 @@ OBJECTS+=\
 	$(RADIODRIVEROBJECTS)
 
 OBJECTS+=\
-	u.o\
-	rpigpio.o\
-	tty.o
+	u.o
 
 CLEANFILES+=pingrf
 

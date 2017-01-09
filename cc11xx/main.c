@@ -5,8 +5,8 @@ void rfrfintr(void) __interrupt RF_VECTOR;
 
 /* XXX TODO */
 #ifndef CC1111
-void utx0intr(void) __interrupt UTX0_VECTOR;
-void urx0intr(void) __interrupt URX0_VECTOR;
+void utx1intr(void) __interrupt UTX1_VECTOR;
+void urx1intr(void) __interrupt URX1_VECTOR;
 #endif
 
 /* XXX TODO */
@@ -65,23 +65,25 @@ main(void)
 
 	P1DIR |= LEDBITS;
 
+	GREEN = RED = 0;
+
 	printinit();
 	srvinit();
 	rfinit();
 
-	GREEN = RED = 0;
- 	
 	// Enables interrupts. (Go go go)
 	EA = 1;
-	
-	wdinit();
 
 	dprint("pingrf started.\n");
+
+	wdinit();
+	
+	i=0;
 
 	srvrx();
 	for(;;){
 		wdreset();
-
+		
 		if(flag&Fpanic){
 			GREEN = 0;
 			RED = 0;
@@ -89,7 +91,6 @@ main(void)
 			for(;;){
 				RED ^= 1;
 				sleep(1000);
-				/* TODO: reset */
 			}
 		}
 		
@@ -100,7 +101,7 @@ main(void)
 		case Idle:
 			if(peekcall()->type == Nop)
 				break;
-
+				
 			nextcall(&c);
 			waitflag = clearflag = 0;
 			call(&c, &state, &waitflag, &clearflag);
@@ -160,6 +161,8 @@ main(void)
 			dprint(" waitflag=");
 			printflag(waitflag);
 			dprint(" radio=%s\n", strmarcstate(lastMARCSTATE));
+			
+			dprintsrvstate();
 
 //			dprint(" flag=%F waitflag=%F radio=%S\n", flag, waitflag, lastMARCSTATE);
 //

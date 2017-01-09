@@ -24,7 +24,8 @@ LIBRADIOOBJECTS=\
 
 RADIODRIVEROBJECTS=\
 	lib/intel_hex.o\
-	libradio/driver.o
+	libradio/driver.o\
+	libradio/rpigpio.o
 
 CFLAGS+=\
 	-I$(PINGRF)/include

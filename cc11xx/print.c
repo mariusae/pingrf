@@ -30,12 +30,6 @@ void abort();
 void
 printinit()
 {
-/*
-	fmtinstall('S', marcstatefmt);
-	fmtinstall('F', flagfmt);
-	fmtinstall('C', rcallfmt);
-*/
-
 	// UART, defaults.
 	U1CSR = U1CSR_MODE;
 	
@@ -118,7 +112,7 @@ void
 uart1txintr(void) __interrupt UTX1_VECTOR
 {
 	UTX1IF = 0;
-
+	
 	if(n > 0){
 		U1DBUF = buf[readpos++];
 		if(readpos == N)

@@ -17,12 +17,18 @@ static volatile uint8 nrx, ntx;
 static volatile uint8 rxstate;
 
 void
+dprintsrvstate()
+{
+	dprint("nrx=%d ntx=%d rxstate=%d\n", nrx, ntx, rxstate);
+}
+
+void
 srvinit()
 {
-	usb_init( );
-	usb_enable( );
-	usb_up( );
-	usb_flush( );
+	usb_init();
+	usb_enable();
+	usb_up();
+	usb_flush();
 
 	rxstate = Uidle;
 }
@@ -61,7 +67,6 @@ srvrxpeek()
 		GREEN = 0;
 		return;
 	}
-	GREEN=0;
 
 	dprint("%c ", nibbles[0]);
 	nibbles[1] = usb_getchar();
@@ -75,14 +80,16 @@ srvrxpeek()
 			while (1) {;}
         		rxstate = Uready;
 			flag &= ~Frxcall;
+			GREEN=0;
 			return;
 		}
 
 		if (in_byte == 0xff) {
 			dprint("radio reset\n");
-        		rxstate = Uready;
+	        		rxstate = Uready;
 			flag &= ~Frxcall;
-			return;
+			WDCTL = BIT(3) | BIT(0);
+			for(;;) sleep(1);
 		}
 
 		// if the index is still at 0, here is the length
@@ -108,11 +115,14 @@ srvrxpeek()
 		flag |= Frxcall;
 		dprint(" ---- read %d\n", length);
 	} else {
+		RED=1;
 		// if we didn't read everything, let's let
 		// WD take over here
 		dprint(" ---- only read %d out of %d\n", nrx, length);
 		while (1) {;}
 	}
+	
+	GREEN=0;
 }
 
 void

@@ -1,0 +1,19 @@
+acmemake DEBUG=1 clean
+acmemake DEBUG=1 clean flimpl.h
+acmemake DEBUG=1 flimpl.h
+
+acmemake DEBUG=1 clean all
+acmemake DEBUG=1
+
+acmemake DEBUG=1 UART=1  flimpl.h
+
+acmemake UART=1 flimpl.h
+
+cc-tool --reset
+
+acmemake clean flimpl.h
+
+win termcat /dev/tty.usbserial
+
+
+/dev/tty.usbserial4
