@@ -4,10 +4,8 @@ OBJ = pkg
 
 CODE_LOC :=
 CC = sdcc
-CFLAGS = --model-large --opt-code-size --std-c99
-LDFLAGS_FLASH = \
-	--xram-loc 0xf000  \
-	--xram-size 0x1000
+CFLAGS = --std-c99 --stack-auto
+LDFLAGS_FLASH = --xram-loc 0xf000
 
 CFLAGS += -I$(ROOT)/tiny9/8051/include
 CFLAGS += -I$(ROOT)/tiny9/include
@@ -109,11 +107,11 @@ $(OBJ)/erf.hex: $(addprefix $(OBJ)/erf/,$(erfrel) noprint.rel)
 
 %.flash: $(OBJ)/%.hex
 	cc-tool -v -e -w $<
-	
-%.load: $(OBJ)/%.ihx
-	./rfcat_bootloader /dev/tty.usbmodem000001 download $<
-	./rfcat_bootloader /dev/tty.usbmodem000001 verify $<
-	./rfcat_bootloader /dev/tty.usbmodem000001 run
+
+%.ys1load: $(OBJ)/%.ihx
+	./rfcat_bootloader /dev/RFCAT_BL_YS1 download $<
+	./rfcat_bootloader /dev/RFCAT_BL_YS1 verify $<
+	./rfcat_bootloader /dev/RFCAT_BL_YS1 run
 
 clean:
 	rm -rf $(OBJ)

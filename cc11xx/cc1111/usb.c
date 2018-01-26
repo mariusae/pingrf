@@ -57,8 +57,8 @@ __xdata uint8_t usb_configuration;
 // Send an IN data packet
 static void usb_ep0_flush()
 {
-  __xdata uint8_t this_len;
-  __xdata uint8_t cs0;
+  __xdata static uint8_t this_len;
+  __xdata static uint8_t cs0;
 
   // If the IN packet hasn't been picked up, just return
   USBINDEX = 0;
@@ -88,8 +88,11 @@ static void usb_get_descriptor(uint16_t value)
 {
   __xdata uint8_t * descriptor;
   // uint8_t   *__xdata descriptor;
-  __xdata uint8_t   type = value >> 8;
-  __xdata uint8_t   index = value;
+  __xdata static uint8_t   type ; // = value >> 8;
+  __xdata static uint8_t   index ; // = value;
+  
+  type = value >> 8;
+  index = value;
 
   descriptor = usb_descriptors;
   while (descriptor[0] != 0) {
@@ -108,7 +111,7 @@ static void usb_get_descriptor(uint16_t value)
 // Read data from the ep0 OUT fifo
 static void usb_ep0_fill()
 {
-  __xdata uint8_t len;
+  __xdata static uint8_t len;
 
   USBINDEX = 0;
   len = USBCNT0;
@@ -247,7 +250,7 @@ static void usb_ep0_setup()
 // This function must be called periodically to process ep0 messages.
 static void usb_ep0()
 {
-  __xdata uint8_t cs0;
+  __xdata static uint8_t cs0;
 
   // If the ep0 flag has been set by the USB interrupt then do some processing
   if (usb_iif & 1)

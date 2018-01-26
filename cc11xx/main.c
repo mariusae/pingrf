@@ -44,9 +44,9 @@ main(void)
 	uint32 nrftx = 0, nrxuf = 0;
 	int i = 0;
 	static __xdata Rcall c;
-	uint8 state = Idle;
-	uint8 waitflag = 0, clearflag = 0;
-	uint8 laststate, lastflag, lastMARCSTATE;
+	static __xdata uint8 state = Idle;
+	static __xdata uint8 waitflag = 0, clearflag = 0;
+	static __xdata uint8 laststate, lastflag, lastMARCSTATE;
 	
 	laststate = state;
 	lastflag = flag;
