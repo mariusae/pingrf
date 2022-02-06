@@ -14,9 +14,7 @@ char *argv0;
 /* char *ttypath = "/dev/cu.usbserial-AH03IMYO"; */
 char *ttypath = nil;
 speed_t ttybaud = B19200;
-#endif 
-
-int reset;
+#endif
 
 void usage();
 void opentty();
@@ -31,6 +29,7 @@ int	roundtrip(uint8*);
 
 static void chklearn();
 static void	ping();
+static void reset();
 
 uint32	crc32(void*, uint);
 
@@ -65,7 +64,7 @@ taskmain(int argc, char **argv)
 	char c;
 	char *radio;
 	int doreset = 0;
-	
+
 	radio = "tty:";
 
 	fixfmtinstall();
@@ -75,7 +74,7 @@ taskmain(int argc, char **argv)
 
 	ARGBEGIN{
 	case 'r':
-		radio = EARGF(usage()); 
+		radio = EARGF(usage());
 		break;
 	case 'R':
 		doreset = 1;
@@ -120,13 +119,15 @@ taskmain(int argc, char **argv)
 		print("crc32(%s) = %8ux\n", argv[1], crc32(buf, n));
 	}else if(strcmp(argv[0], "ping") == 0){
 		ping();
+	}else if(strcmp(argv[0], "reset") == 0){
+		reset();
 	}else if(strcmp(argv[0], "stat") == 0){
 		Pstat ps;
-		
+
 		if(pstat(&ps) < 0)
 			panic("pstat: %r");
-		
-		print("%4d/%2d/%2d %2d:%2d\n", 
+
+		print("%4d/%2d/%2d %2d:%2d\n",
 			ps.year, ps.month, ps.day, ps.hour, ps.minute);
 		print("	Insulin remaining: %d\n", ps.insulinleft);
 		print("	IOB: %.3uF\n", ps.iob);
@@ -136,7 +137,7 @@ taskmain(int argc, char **argv)
 		print("	Daily bolus delivery: %.3uF\n", ps.dailybolus);
 		print("	Last bolus: %.3uF\n", ps.lastbolus);
 		if(ps.comboactive){
-			print("	Combo active %2d:%2d-%2d:%2d %.3uF/%.3uF\n", 
+			print("	Combo active %2d:%2d-%2d:%2d %.3uF/%.3uF\n",
 				ps.combostarthour, ps.combostartminute,
 				ps.comboendhour, ps.comboendminute,
 				ps.combodelivered, ps.combototal);
@@ -154,7 +155,7 @@ taskmain(int argc, char **argv)
 
 		insulin = strtof(argv[1], nil);
 		hours = strtof(argv[2], nil);
-		
+
 		if(pbolus((uint)(insulin*1000.0), (uint)(hours*60)) < 0)
 			panic("pbolus: %r");
 
@@ -174,7 +175,7 @@ taskmain(int argc, char **argv)
 
 		if(type < 0)
 			usage();
-		
+
 		call(type);
 	}else{
 		usage();
@@ -240,7 +241,7 @@ chklearn()
 		tx.timeoutms = 0;
 		if(rcall(&tx, &rx) < 0)
 			panic("rcall: %r");
-			
+
 		chk32 = U32GETLE(rx.pkt+4);
 
 		if(pumpaddchk(rx.pkt, 4, chk32) < 0)
@@ -251,6 +252,7 @@ chklearn()
 	}
 }
 
+
 static void
 ping()
 {
@@ -259,8 +261,20 @@ ping()
 	tx.type = Tping;
 	if(rcall(&tx, &rx) < 0)
 		panic("rcall: %r");
-	
+
 	print("%R\n", &rx);
+}
+
+static void
+reset()
+{
+	Rcall tx, rx;
+
+	tx.type = Treset;
+	tx.timeoutms = 0;
+	if(rcall(&tx, &rx) < 0)
+		panic("rcall: %r");
+	/*TODO: we don't expect this to return.*/
 }
 
 void
