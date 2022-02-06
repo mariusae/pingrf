@@ -272,9 +272,8 @@ reset()
 
 	tx.type = Treset;
 	tx.timeoutms = 0;
-	if(rcall(&tx, &rx) < 0)
-		panic("rcall: %r");
-	/*TODO: we don't expect this to return.*/
+	if(rcall(&tx, &rx) == 0)
+		panic("rcall: returned");
 }
 
 void
