@@ -220,10 +220,10 @@ convC2P(Pcall *c, uint8 *ap/*[Npkt]]*/)
 	default:	break;
 
 	case Twakeup:
-		*p++ = 0xbf;
+		*p++ = 0x34;
 		*p++ = 0x00;
-		*p++ = 0x5b;
-		*p++ = 0x17;
+		*p++ = 0x11;
+		*p++ = 0x13;
 		break;
 
 	case Tbolus:
