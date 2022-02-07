@@ -100,3 +100,23 @@ debug hints
 		just reissue the command and use your remote to replicate the
 		action that you are looking for pingrf to do. the existing
 		table will be added with new command/checksum combo
+
+Bootloader
+
+Pingrf supports bootloading using the rfcat bootloader.
+
+ 1.	Put the card into bootloader mode. (This can be done manually or
+ 	with "rfcat --bootloader", or through the interactive rfcat prompt.)
+	 	$ rfcat -r
+		>>> d.bootloader()
+ 2.	make cc1111+ccloader.ys1load
+
+
+Enabling bootloader mode on the Yardstick One, by connecting pins 7 and 9:
+	-----------------------------------------
+	| YARD Stick One      2 4 6 8 10 12 14  |
+	|                     1 3 5 7 9  11 13  ------
+	|                                        USB |
+	|                                       ------
+	|                                       |
+	-----------------------------------------
